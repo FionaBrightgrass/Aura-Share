@@ -59,7 +59,7 @@
                 }
                     //If a token is in range, add the aura:
                 if(radius != null && radius != 'undefined' && distance <= radius && !IsUnconcious(parentToken.actor)){
-                    filteredChildAuras = childToken.actor.items.filter(o => o.system.identifiedName == newAura.system.identifiedName);
+                    let filteredChildAuras = childToken.actor.items.filter(o => o.system.identifiedName == newAura.system.identifiedName);
                     if(filteredChildAuras.length == 0){
                         childToken.actor.createEmbeddedDocuments('Item', newAura);
                         //This is where the aura is granted.
