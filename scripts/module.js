@@ -145,7 +145,7 @@
                     let childAuras = GetActorAuras(childToken.actor, false);
                     let auraIDsToDelete = [];
                     //we're making an array containing aura objects, but only if the name matches
-                    if (childAuras != null && childAura != 'undefined'){
+                    if (childAuras != null && childAuras != 'undefined'){
                         childAuras.forEach(childAura => {
                             if(targetAuraNames.includes(childAura.system.identifiedName)){
                                 auraIDsToDelete.push(childAura.id);
