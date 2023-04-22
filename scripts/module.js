@@ -31,9 +31,11 @@
 
     function ApplyActorAuras(parentToken, childToken){
         let distance = Math.ceil(canvas.grid.measureDistance(childToken, parentToken));
+        console.log(7);
         let parentAuras = GetActorAuras(parentToken.actor, true);
         //Grabs the parent auras of the token that just moved
         if(parentAuras != null && parentAuras != 'undefined' && parentAuras != 'none'){
+            console.log(8);
             parentAuras.forEach(parentAura => {
                 let childAuras = GetActorAuras(childToken.actor, false);
                 let newAura = parentAura.actor.items.getName(parentAura.name).toObject();
@@ -48,12 +50,17 @@
                     let auraIDsToDelete = [];
                     //we're making an array containing aura objects, but only if the name matches
                     childAuras.forEach(childAura => {
-                        if(newAura.name == childAura.system.identifiedName){
-                            auraIDsToDelete.push(childAura.id);
-                        };
+                            if(newAura.name == childAura.system.identifiedName){
+                                auraIDsToDelete.push(childAura.id);
+                            };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                        childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
+                        try{
+                            childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
+                        }
+                        catch{
+                            console.log("DELETE");
+                        }
                         //remove the aura document
                     }
                 }
@@ -62,7 +69,13 @@
                     if(parentAura.system.active == true || parentAura.system.flags.dictionary.alliesOnly == "true" || parentAura.system.flags.dictionary.shareInactive == "true"){
                         let filteredChildAuras = childToken.actor.items.filter(o => o.system.identifiedName == newAura.system.identifiedName);
                         if(filteredChildAuras.length == 0){
-                            childToken.actor.createEmbeddedDocuments('Item', newAura);
+                            try{
+                                childToken.actor.createEmbeddedDocuments('Item', newAura);
+                            }
+                            catch{
+                                console.log("CREATE");
+                            }
+
                             //This is where the aura is granted.
                         }
                     }
@@ -73,32 +86,39 @@
     }
 
     function ApplyAllAuras(){
-        if(canvas.tokens.controlled[0] == 'undefined' || canvas.tokens.controlled[0] == null){
+        /*if(canvas.tokens.controlled[0] == 'undefined' || canvas.tokens.controlled[0] == null){
             return;
         }
         let activeToken = canvas.tokens.controlled[0];
-        let activeTokenDisposition = activeToken.document.disposition;
-        let passiveTokens = canvas.tokens.placeables;
-        passiveTokens.forEach(passiveToken => {
-            if(passiveToken.actor.data.name != activeToken.actor.data.name && passiveToken.document != 'undefined'){
-                //We also don't want the actor to give his buffs to himself.
-                let passiveTokenDisposition = passiveToken.document.disposition;
-                if(passiveTokenDisposition == activeTokenDisposition){
-                        //I know its not real Disposition
-                        ApplyActorAuras(activeToken, passiveToken);
-                        //Token that moved -> Every ally around them.
-                        ApplyActorAuras(passiveToken, activeToken);
-                        //Every ally -> token to moved.
+        */
+       console.log(1);
+        let activeTokens = canvas.tokens.placeables;
+        activeTokens.forEach(activeToken => {
+            console.log(2);
+            let activeTokenDisposition = activeToken.document.disposition;
+            let passiveTokens = canvas.tokens.placeables;
+            passiveTokens.forEach(passiveToken => {
+                console.log(3);
+                if(passiveToken.actor.data.name != activeToken.actor.data.name && passiveToken.document != 'undefined'){
+                    //We also don't want the actor to give his buffs to himself.
+                    console.log(4);
+                    let passiveTokenDisposition = passiveToken.document.disposition;
+                    if(passiveTokenDisposition == activeTokenDisposition){
+                            //I know its not real Disposition
+                            console.log(5);
+                            ApplyActorAuras(activeToken, passiveToken);
+                            //Token -> Every ally around them.
+                    }
                 }
+                if(IsUnconcious(passiveToken.actor)){
+                    DebuffAllies(passiveToken.actor);
+                }
+                //We want to remove all buffs from sleepy heads.
+            });
+            if(IsUnconcious(activeToken.actor)){
+                DebuffAllies(activeToken.actor);
             }
-            if(IsUnconcious(passiveToken.actor)){
-                DebuffAllies(passiveToken.actor);
-            }
-            //We want to remove all buffs from sleepy heads.
         });
-        if(IsUnconcious(activeToken.actor)){
-            DebuffAllies(activeToken.actor);
-        }
         //If they're unconcious let's strip the buffs. Just to be safe. There may be a more optimal way of doing this.
         return;
     }
@@ -125,15 +145,21 @@
                     let childAuras = GetActorAuras(childToken.actor, false);
                     let auraIDsToDelete = [];
                     //we're making an array containing aura objects, but only if the name matches
-                    childAuras.forEach(childAura => {
-                        if(targetAuraNames.includes(childAura.system.identifiedName)){
-                            auraIDsToDelete.push(childAura.id);
-                        };
-                    })
-                    if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                        childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
-                        return;
-                        //remove the aura document
+                    if (childAuras != null && childAura != 'undefined'){
+                        childAuras.forEach(childAura => {
+                            if(targetAuraNames.includes(childAura.system.identifiedName)){
+                                auraIDsToDelete.push(childAura.id);
+                            };
+                        })
+                        if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
+                            try{
+                                childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
+                            }
+                            catch{
+                                console.log("DEBUFFDELETE");
+                            }
+                            //remove the aura document
+                        }
                     }
                 }
             });
