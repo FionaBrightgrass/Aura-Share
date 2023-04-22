@@ -53,7 +53,6 @@
                         };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                        console.log(auraIDsToDelete);
                         childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
                         //remove the aura document
                     }
@@ -78,7 +77,6 @@
             return;
         }
         let activeToken = canvas.tokens.controlled[0];
-        console.log(activeToken);
         let activeTokenDisposition = activeToken.document.disposition;
         let passiveTokens = canvas.tokens.placeables;
         passiveTokens.forEach(passiveToken => {
@@ -135,7 +133,6 @@
                         };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                        console.log(auraIDsToDelete);
                         childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
                         return;
                         //remove the aura document
