@@ -2,6 +2,7 @@
     "id": "Pathfinder-Aura-Share",
     "name": "Pathfinder-Aura-Share",
     "title": "Pathfinder Aura Share",
+    "description": "Automates auras in PF 1.E VTT",
     "version": "0.9.0",
     "esmodules": [
         "scripts/module.js"
@@ -17,5 +18,5 @@
     "compatibleCoreVersion": "10",
     "url": "https://github.com/Cactuar87/Pathfinder-Aura-Share/",
     "manifest": "https://github.com/Cactuar87/Pathfinder-Aura-Share/blob/main/module.json",
-    "download": "https://github.com/Cactuar87/Pathfinder-Aura-Share/blob/main/module.zip"
+    "download": "https://github.com/Cactuar87/Pathfinder-Aura-Share/archive/refs/heads/main.zip"
   }
