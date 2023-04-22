@@ -3,7 +3,7 @@
     "name": "Pathfinder-Aura-Share",
     "title": "Pathfinder Aura Share",
     "description": "Automates auras in PF 1.E VTT",
-    "version": "0.9.2",
+    "version": "0.9.3",
     "esmodules": [
         "scripts/module.js"
       ],

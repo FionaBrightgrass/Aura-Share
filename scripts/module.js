@@ -17,7 +17,7 @@
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
 
-export class PathfinderAuraShare {
+class PathfinderAuraShare {
     GetActorAuras(auraActor, getParentAuras){
         let auras = [];
         if(getParentAuras == true){
