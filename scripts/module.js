@@ -53,6 +53,7 @@
                         };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
+                        console.log(auraIDsToDelete);
                         childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
                         //remove the aura document
                     }
@@ -105,8 +106,8 @@
     }
 
     function IsUnconcious(actor){
-        let hp = actor.system.attributes.hp.value;
-        if(hp < 1){
+        let health = actor.system.attributes.hp.value;
+        if(health < 1){
             return true;
         }
         return false;
@@ -128,10 +129,13 @@
                     //we're making an array containing aura objects, but only if the name matches
                     childAuras.forEach(childAura => {
                         if(targetAuraNames.includes(childAura.system.identifiedName)){
-                            auraIDsToDelete.push(childAura.id);
+                            if(!auraIDsToDelete.find(id => id == childAura.id)){
+                                auraIDsToDelete.push(childAura.id);
+                            }
                         };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
+                        console.log(auraIDsToDelete);
                         childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
                         return;
                         //remove the aura document
@@ -143,8 +147,7 @@
     }
 
 Hooks.on('destroyToken', (PlaceableObject) =>{
-    let actor = PlaceableObject.actor
-    DebuffAllies(actor);
+    DebuffAllies(PlaceableObject.actor);
 });
 
 Hooks.on('updateActor', (actor) =>{
