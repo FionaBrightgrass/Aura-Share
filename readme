@@ -29,3 +29,6 @@ Removes the buff if:
 Notes:
 It occasionally throws an error (in the f12 console only) about trying to access a non existent document on an actor. 
 This shouldn't hurt anything, but may be alarming if you hit f12 and notice it pop up every now and then.
+
+
+Additionally, the buffs are not yet removed when an actor is deleted from a map. Please be aware of this. This will be added in the future.
