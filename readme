@@ -6,3 +6,9 @@ Give it a dictionary flag of "radius" with a value greater than 0.
 It will auto copy to other tokens except with:
 Name becomes: Aura Name (Source Actors Name)
 "radius" is set to 0 on the recipient
+
+
+If:
+-The source dies, it removes the buff.
+-The source moves out of range, it removes the buff.
+-The recipient moves out of range, it removes the buff.
