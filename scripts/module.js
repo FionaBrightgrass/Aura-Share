@@ -17,8 +17,7 @@
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
 
-class PathfinderAuraShare {
-    GetActorAuras(auraActor, getParentAuras){
+    function GetActorAuras(auraActor, getParentAuras){
         let auras = [];
         if(getParentAuras == true){
             auras = (auraActor.items.filter(o => o.system.flags.dictionary.radius > 0));
@@ -30,7 +29,7 @@ class PathfinderAuraShare {
         return auras;
     }
 
-    ApplyActorAuras(parentToken, childToken){
+    function ApplyActorAuras(parentToken, childToken){
         let distance = Math.ceil(canvas.grid.measureDistance(childToken, parentToken));
         let parentAuras = GetActorAuras(parentToken.actor, true);
         //Grabs the parent auras of the token that just moved
@@ -71,7 +70,7 @@ class PathfinderAuraShare {
         return;
     }
 
-    ApplyAllAuras(){
+    function ApplyAllAuras(){
         let activeToken = canvas.tokens.controlled[0];
         let activeTokenDisposition = activeToken.document.disposition;
         let passiveTokens = canvas.tokens.placeables;
@@ -98,7 +97,7 @@ class PathfinderAuraShare {
         //If they're unconcious let's strip the buffs. Just to be safe. There may be a more optimal way of doing this.
     }
 
-    IsUnconcious(actor){
+    function IsUnconcious(actor){
         let hp = actor.system.attributes.hp.value;
         if(hp < 1){
             return true;
@@ -106,7 +105,7 @@ class PathfinderAuraShare {
         return false;
     }
 
-    DebuffAllies(parentActor){
+    function DebuffAllies(parentActor){
         let parentAuras = GetActorAuras(parentActor, true);
         if(parentAuras != 'none' && parentAuras != 'undefined' && parentAuras != null){
             let childTokens = canvas.tokens.placeables;
@@ -131,7 +130,6 @@ class PathfinderAuraShare {
             });
         }
     }
-}
 
 Hooks.on('updateActor', (actor) =>{
     //This one should be obvious but it fires when an actor updates but specifically checks if they hit 0 HP.
