@@ -133,12 +133,12 @@
 
 Hooks.on('updateActor', (actor) =>{
     //This one should be obvious but it fires when an actor updates but specifically checks if they hit 0 HP.
-    if(PathfinderAuraShare.IsUnconcious(actor)){
-        PathfinderAuraShare.DebuffAllies(actor);
+    if(IsUnconcious(actor)){
+        DebuffAllies(actor);
     }
 });
 
 Hooks.on('sightRefresh',(canvas)=>{
     //Hook into site being updated when a token finishes moving.
-    PathfinderAuraShare.ApplyAllAuras();
+    ApplyAllAuras();
 });
