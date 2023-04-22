@@ -22,6 +22,7 @@ Removes the buff if:
 -The source dies.
 -The source moves out of range.
 -The recipient moves out of range.
+-The source disabled the buff, and the buff does not have the "alliesOnly" flag set to "true"
 
 
 
