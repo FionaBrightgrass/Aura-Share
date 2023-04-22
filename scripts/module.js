@@ -31,11 +31,9 @@
 
     function ApplyActorAuras(parentToken, childToken){
         let distance = Math.ceil(canvas.grid.measureDistance(childToken, parentToken));
-        console.log(7);
         let parentAuras = GetActorAuras(parentToken.actor, true);
         //Grabs the parent auras of the token that just moved
         if(parentAuras != null && parentAuras != 'undefined' && parentAuras != 'none'){
-            console.log(8);
             parentAuras.forEach(parentAura => {
                 let childAuras = GetActorAuras(childToken.actor, false);
                 let newAura = parentAura.actor.items.getName(parentAura.name).toObject();
@@ -55,12 +53,7 @@
                             };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                        try{
-                            childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
-                        }
-                        catch{
-                            console.log("DELETE");
-                        }
+                        childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
                         //remove the aura document
                     }
                 }
@@ -69,12 +62,7 @@
                     if(parentAura.system.active == true || parentAura.system.flags.dictionary.alliesOnly == "true" || parentAura.system.flags.dictionary.shareInactive == "true"){
                         let filteredChildAuras = childToken.actor.items.filter(o => o.system.identifiedName == newAura.system.identifiedName);
                         if(filteredChildAuras.length == 0){
-                            try{
-                                childToken.actor.createEmbeddedDocuments('Item', newAura);
-                            }
-                            catch{
-                                console.log("CREATE");
-                            }
+                            childToken.actor.createEmbeddedDocuments('Item', newAura);
 
                             //This is where the aura is granted.
                         }
@@ -91,21 +79,16 @@
         }
         let activeToken = canvas.tokens.controlled[0];
         */
-       console.log(1);
         let activeTokens = canvas.tokens.placeables;
         activeTokens.forEach(activeToken => {
-            console.log(2);
             let activeTokenDisposition = activeToken.document.disposition;
             let passiveTokens = canvas.tokens.placeables;
             passiveTokens.forEach(passiveToken => {
-                console.log(3);
                 if(passiveToken.actor.data.name != activeToken.actor.data.name && passiveToken.document != 'undefined'){
                     //We also don't want the actor to give his buffs to himself.
-                    console.log(4);
                     let passiveTokenDisposition = passiveToken.document.disposition;
                     if(passiveTokenDisposition == activeTokenDisposition){
                             //I know its not real Disposition
-                            console.log(5);
                             ApplyActorAuras(activeToken, passiveToken);
                             //Token -> Every ally around them.
                     }
@@ -152,12 +135,7 @@
                             };
                         })
                         if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                            try{
-                                childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
-                            }
-                            catch{
-                                console.log("DEBUFFDELETE");
-                            }
+                            childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
                             //remove the aura document
                         }
                     }
