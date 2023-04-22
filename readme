@@ -18,4 +18,5 @@ If:
 
 
 Notes:
-It occasionally throws an error (in the f12 console only) about trying to access a non existent document on an actor. This shouldn't hurt anything, but may be alarming if you hit f12 and notice it pop up every now and then.
+It occasionally throws an error (in the f12 console only) about trying to access a non existent document on an actor. 
+This shouldn't hurt anything, but may be alarming if you hit f12 and notice it pop up every now and then.
