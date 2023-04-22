@@ -23,12 +23,6 @@ Removes the buff if:
 -The source moves out of range.
 -The recipient moves out of range.
 -The source disabled the buff, and the buff does not have the "alliesOnly" flag set to "true"
+-The source actor is deleted from the scene.
 
-
-
-Notes:
-It occasionally throws an error (in the f12 console only) about trying to access a non existent document on an actor. 
-This shouldn't hurt anything, but may be alarming if you hit f12 and notice it pop up every now and then.
-
-
-Additionally, the buffs are not yet removed when an actor is deleted from a map. Please be aware of this. This will be added in the future.
+Note: It does not apply the buff the moment a token is create. Rather, it does it on move/click/update. This will be addressed later.

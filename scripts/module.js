@@ -73,11 +73,15 @@
     }
 
     function ApplyAllAuras(){
+        if(canvas.tokens.controlled[0] == 'undefined' || canvas.tokens.controlled[0] == null){
+            return;
+        }
         let activeToken = canvas.tokens.controlled[0];
+        console.log(activeToken);
         let activeTokenDisposition = activeToken.document.disposition;
         let passiveTokens = canvas.tokens.placeables;
         passiveTokens.forEach(passiveToken => {
-            if(passiveToken.actor.data.name != activeToken.actor.data.name){
+            if(passiveToken.actor.data.name != activeToken.actor.data.name && passiveToken.document != 'undefined'){
                 //We also don't want the actor to give his buffs to himself.
                 let passiveTokenDisposition = passiveToken.document.disposition;
                 if(passiveTokenDisposition == activeTokenDisposition){
@@ -97,6 +101,7 @@
             DebuffAllies(activeToken.actor);
         }
         //If they're unconcious let's strip the buffs. Just to be safe. There may be a more optimal way of doing this.
+        return;
     }
 
     function IsUnconcious(actor){
@@ -117,21 +122,30 @@
             });
             //basically, we just made an array of auras in the name format that will match the child tokens. We're targetting auras of those names for deletion.
             childTokens.forEach(childToken => {
-                let childAuras = GetActorAuras(childToken.actor, false);
-                let auraIDsToDelete = [];
-                //we're making an array containing aura objects, but only if the name matches
-                childAuras.forEach(childAura => {
-                    if(targetAuraNames.includes(childAura.system.identifiedName)){
-                        auraIDsToDelete.push(childAura.id);
-                    };
-                })
-                if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                    childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
-                    //remove the aura document
+                if(childToken.actor.name != parentActor.name){
+                    let childAuras = GetActorAuras(childToken.actor, false);
+                    let auraIDsToDelete = [];
+                    //we're making an array containing aura objects, but only if the name matches
+                    childAuras.forEach(childAura => {
+                        if(targetAuraNames.includes(childAura.system.identifiedName)){
+                            auraIDsToDelete.push(childAura.id);
+                        };
+                    })
+                    if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
+                        childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
+                        return;
+                        //remove the aura document
+                    }
                 }
             });
         }
+        return;
     }
+
+Hooks.on('destroyToken', (PlaceableObject) =>{
+    let actor = PlaceableObject.actor
+    DebuffAllies(actor);
+});
 
 Hooks.on('updateActor', (actor) =>{
     //This one should be obvious but it fires when an actor updates but specifically checks if they hit 0 HP.
@@ -141,6 +155,11 @@ Hooks.on('updateActor', (actor) =>{
 });
 
 Hooks.on('sightRefresh',(canvas)=>{
+    //Hook into site being updated when a token finishes moving.
+    ApplyAllAuras();
+});
+
+Hooks.on('createToken',(token)=>{
     //Hook into site being updated when a token finishes moving.
     ApplyAllAuras();
 });
