@@ -11,11 +11,16 @@ Name becomes: Aura Name (Source Actors Name)
 "radius" is set to 0 on the recipient
 
 
-If:
--The source dies, it removes the buff.
--The source moves out of range, it removes the buff.
--The recipient moves out of range, it removes the buff.
-
+Adds the buff to allies if:
+-The source actor has a buff with a radius > 0 and the buff is enabled, or:
+-The source actor's buff has the "alliesOnly" dictionary flag set to "true", it shares the buff even if it's disabled.
+  (This allows for buffs to be araus that don't aid the source)
+  (alliesOnly = "true" + buff disabled)
+ 
+Removes the buff if:
+-The source dies.
+-The source moves out of range.
+-The recipient moves out of range.
 
 
 
