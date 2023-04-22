@@ -1,3 +1,6 @@
+NOW WORKING
+
+Manifest URL: https://github.com/Cactuar87/Pathfinder-Aura-Share/releases/download/latest/module.json
 
 Add a buff to a PF1E actor. Name it whatever you'd like.
 
@@ -12,3 +15,10 @@ If:
 -The source dies, it removes the buff.
 -The source moves out of range, it removes the buff.
 -The recipient moves out of range, it removes the buff.
+
+
+
+
+Notes:
+It occasionally throws an error (in the f12 console only) about trying to access a non existent document on an actor. 
+This shouldn't hurt anything, but may be alarming if you hit f12 and notice it pop up every now and then.
