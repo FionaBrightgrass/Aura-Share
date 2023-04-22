@@ -17,7 +17,6 @@
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
 
-export class PathfinderAuraShare extends Application {
     GetActorAuras(auraActor, getParentAuras){
         let auras = [];
         if(getParentAuras == true){
@@ -131,8 +130,6 @@ export class PathfinderAuraShare extends Application {
             });
         }
     }
-
-}
 
 Hooks.on('updateActor', (actor) =>{
     //This one should be obvious but it fires when an actor updates but specifically checks if they hit 0 HP.
