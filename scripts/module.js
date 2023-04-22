@@ -16,7 +16,6 @@
 // Tokens refresh sight at the end of movement by default, so this reduces how often it fires. There's likely a better hook.
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
-
     GetActorAuras(auraActor, getParentAuras){
         let auras = [];
         if(getParentAuras == true){
@@ -130,15 +129,14 @@
             });
         }
     }
-
 Hooks.on('updateActor', (actor) =>{
     //This one should be obvious but it fires when an actor updates but specifically checks if they hit 0 HP.
-    if(PathfinderAuraShare.IsUnconcious(actor)){
-        PathfinderAuraShare.DebuffAllies(actor);
+    if(IsUnconcious(actor)){
+        DebuffAllies(actor);
     }
 });
 
 Hooks.on('sightRefresh',(canvas)=>{
     //Hook into site being updated when a token finishes moving.
-    PathfinderAuraShare.ApplyAllAuras();
+    ApplyAllAuras();
 });
