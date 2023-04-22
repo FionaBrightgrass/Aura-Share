@@ -4,7 +4,8 @@ Manifest URL: https://github.com/Cactuar87/Pathfinder-Aura-Share/releases/downlo
 
 Add a buff to a PF1E actor. Name it whatever you'd like.
 
-Give it a dictionary flag of "radius" with a value greater than 0.
+Give the aura actor a dictionary flag of "radius" with a value greater than 0.
+optional: Give the aura actor a dictionary flag of alliesOnly with a value of "true" to allow sharing of disabled auras.
 
 It will auto copy to other tokens except with:
 Name becomes: Aura Name (Source Actors Name)
