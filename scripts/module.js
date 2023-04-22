@@ -127,9 +127,7 @@
                     //we're making an array containing aura objects, but only if the name matches
                     childAuras.forEach(childAura => {
                         if(targetAuraNames.includes(childAura.system.identifiedName)){
-                            if(!auraIDsToDelete.find(id => id == childAura.id)){
-                                auraIDsToDelete.push(childAura.id);
-                            }
+                            auraIDsToDelete.push(childAura.id);
                         };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
@@ -155,11 +153,6 @@ Hooks.on('updateActor', (actor) =>{
 });
 
 Hooks.on('sightRefresh',(canvas)=>{
-    //Hook into site being updated when a token finishes moving.
-    ApplyAllAuras();
-});
-
-Hooks.on('createToken',(token)=>{
     //Hook into site being updated when a token finishes moving.
     ApplyAllAuras();
 });
