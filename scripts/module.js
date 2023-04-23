@@ -30,7 +30,7 @@ function GetActorAuras(auraActor, getParentAuras){
 }
 
 function ApplyActorAuras(parentToken, childToken){
-    let distance = canvas.grid.measureDistance(childToken, parentToken) + 0.1; //adding 0.1 prevent foundry from trying to double delete an entry when moving the token from the radius edge to outside.
+    let distance = canvas.grid.measureDistance(childToken, parentToken); //adding 0.1 prevent foundry from trying to double delete an entry when moving the token from the radius edge to outside.
     let parentAuras = GetActorAuras(parentToken.actor, true);
     //Grabs the parent auras of the token that just moved
     if(parentAuras != null && parentAuras != 'undefined' && parentAuras != 'none'){
@@ -146,11 +146,11 @@ function DebuffAllies(parentActor){
     }
     return;
 }
-
+/*
 Hooks.on('destroyToken', (PlaceableObject) =>{
     DebuffAllies(PlaceableObject.actor);
 });
-
+*/
 Hooks.on('updateActor', (actor) =>{
     //This one should be obvious but it fires when an actor updates but specifically checks if they hit 0 HP.
     if(IsUnconcious(actor)){
