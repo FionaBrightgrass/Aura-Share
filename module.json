@@ -14,7 +14,7 @@
         "discord": "Cactuar#3425"
       }
     ],
-    "minimumCoreVersion": "9.0.0",
+    "minimumCoreVersion": "10.0.0",
     "compatibleCoreVersion": "10",
     "url": "https://github.com/Cactuar87/Pathfinder-Aura-Share/",
     "manifest": "https://github.com/Cactuar87/Pathfinder-Aura-Share/raw/main/module.json",
