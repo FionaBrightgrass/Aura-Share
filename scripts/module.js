@@ -44,7 +44,7 @@ function ApplyActorAuras(parentToken, childToken){
             //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
             let radius = parentAura.system.flags.dictionary.radius;
             let deletePassiveAuras = [];
-            if(radius != null && radius != 'undefined' && distance > radius){
+            if((radius != null && radius != 'undefined' && distance > radius) || (parentAura.system.active == false && parentAura.system.flags.dictionary.alliesOnly != "true" && parentAura.system.flags.dictionary.shareInactive != "true")){
                 let auraIDsToDelete = [];
                 //we're making an array containing aura objects, but only if the name matches
                 childAuras.forEach(childAura => {
