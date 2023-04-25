@@ -29,43 +29,78 @@ function GetActorAuras(auraActor, getParentAuras){
     return auras;
 }
 
+function GetInactiveShareFlag(aura){
+    //this is mainly a cleanup script for old methods.
+    let shareAura = false;
+    if(aura.getItemDictionaryFlag("shareInactive") == "true"){
+        if(!aura.hasItemBooleanFlag('shareInactive')){
+            aura.addItemBooleanFlag('shareInactive');
+        }
+        aura.removeItemDictionaryFlag('shareInactive');
+        shareAura = true;
+    }
+    if(aura.getItemDictionaryFlag("alliesOnly") == "true"){
+        if(!aura.hasItemBooleanFlag('shareInactive')){
+            aura.addItemBooleanFlag('shareInactive');
+        }
+        aura.removeItemDictionaryFlag('alliesOnly');
+        shareAura = true;
+    }
+    if(aura.hasItemBooleanFlag('shareInactive')){
+        shareAura = true;
+    }
+    //we're running a repair on old methodology.
+    return shareAura;
+}
+
+function RemoveAura(undesiredAura, childToken){
+    let childAuras = GetActorAuras(childToken.actor, false);
+    let auraIDsToDelete = [];
+    //we're making an array containing aura objects, but only if the name matches an existing aura. It'll be 0-1 length array. deleteEmbeddedDocuments expects an array.
+    childAuras.forEach(childAura => {
+            if(undesiredAura.name == childAura.system.identifiedName){
+                auraIDsToDelete.push(childAura.id);
+            };
+    });
+    if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
+        childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
+        //remove the aura documents from the actor
+    }
+    return;
+}
+
+function AddAura(aura, childToken){
+    let filteredChildAuras = childToken.actor.items.filter(o => o.system.identifiedName == aura.system.identifiedName);
+    //just double check that the aura isn't present.
+    if(filteredChildAuras.length == 0){
+        childToken.actor.createEmbeddedDocuments('Item', aura);
+        //This is where the aura is granted.
+    }
+    return;
+}
+
 function ApplyActorAuras(parentToken, childToken){
     let distance = canvas.grid.measureDistance(childToken, parentToken); //adding 0.1 prevent foundry from trying to double delete an entry when moving the token from the radius edge to outside.
     let parentAuras = GetActorAuras(parentToken.actor, true);
     //Grabs the parent auras of the token that just moved
     if(parentAuras != null && parentAuras != 'undefined' && parentAuras != 'none'){
         parentAuras.forEach(parentAura => {
-            let childAuras = GetActorAuras(childToken.actor, false);
-            let newAura = parentAura.actor.items.getName(parentAura.name).toObject();
+            //Create Aura Copy//
+            let newAura = parentToken.actor.items.getName(parentAura.name).toObject();
             newAura.name = parentAura.name + " (" + parentToken.name + ")";
             newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
             newAura.system.flags.dictionary.radius = 0;
             newAura.system.active = true;
             //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
-            let radius = parentAura.system.flags.dictionary.radius;
-            let deletePassiveAuras = [];
-            if((radius != null && radius != 'undefined' && distance > radius) || (parentAura.system.active == false && parentAura.system.flags.dictionary.alliesOnly != "true" && parentAura.system.flags.dictionary.shareInactive != "true")){
-                let auraIDsToDelete = [];
-                //we're making an array containing aura objects, but only if the name matches
-                childAuras.forEach(childAura => {
-                        if(newAura.name == childAura.system.identifiedName){
-                            auraIDsToDelete.push(childAura.id);
-                        };
-                })
-                if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                    childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
-                    //remove the aura document
-                }
-            }
-                //If a token is in range, add the aura:
-            if(radius != null && radius != 'undefined' && distance <= radius && !IsUnconcious(parentToken.actor)){
-                if(parentAura.system.active == true || parentAura.system.flags.dictionary.alliesOnly == "true" || parentAura.system.flags.dictionary.shareInactive == "true"){
-                    let filteredChildAuras = childToken.actor.items.filter(o => o.system.identifiedName == newAura.system.identifiedName);
-                    if(filteredChildAuras.length == 0){
-                        childToken.actor.createEmbeddedDocuments('Item', newAura);
-                        //This is where the aura is granted.
-                    }
-                }
+            let radius = parentAura.getItemDictionaryFlag('radius');
+            let inRange = ((radius != null) && (radius != 'undefined') && (distance <= radius));
+            let shareIfInactive = GetInactiveShareFlag(parentAura);
+            let validateAura = ((parentAura.system.active || shareIfInactive) && inRange && !IsUnconcious(parentToken.actor));
+            //if the buff has a radius but the distance is greater.
+            if(validateAura){
+                AddAura(newAura, childToken);
+            }else{
+                RemoveAura(newAura, childToken);
             }
         });
     }
@@ -87,7 +122,6 @@ function ApplyAllAuras(){
                 //We also don't want the actor to give his buffs to himself.
                 let passiveTokenDisposition = passiveToken.document.disposition;
                 if(passiveTokenDisposition == activeTokenDisposition){
-                        //I know its not real Disposition
                         ApplyActorAuras(activeToken, passiveToken);
                         //Token -> Every ally around them.
                 }
@@ -134,7 +168,6 @@ function DebuffAllies(parentActor){
                         };
                     })
                     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null){
-                        console.log(childToken.actor.items.filter(o => o.id));
                         if((childToken.actor.items.filter(o => o.id)) != 'undefined' && ((childToken.actor.items.filter(o => o.id)) != null)){
                             childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
                         }
@@ -153,6 +186,7 @@ Hooks.on('destroyToken', (PlaceableObject) =>{
 */
 Hooks.on('updateActor', (actor) =>{
     //This one should be obvious but it fires when an actor updates but specifically checks if they hit 0 HP.
+    ApplyAllAuras();
     if(IsUnconcious(actor)){
         DebuffAllies(actor);
     }
