@@ -40,3 +40,11 @@ Updates
           *Combine this with ShareInactive or it will still impact the original token.
 (v1.1.0)  Token Deletion now triggers the disabling of an aura.)
 (v1.0.10) Code cleanup to improve readability and speed up processing of auras.
+
+
+
+Known Bugs:
+-Renaming an aura will not remove the old buff from a token. Rename auras on the character sheet before the token is placed on the scene.
+-Deleting tokens was causing some console errors. If you end up with any weirdness occuring when deleting items from actors sheets, please tell me ASAP. 
+ I had put in some error handling for this errors, and I want to make sure that it doesn't impact the deletion of items, buffs, features from character sheets.
+
