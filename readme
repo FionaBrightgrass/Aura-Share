@@ -1,5 +1,3 @@
-NOW WORKING - MINUS DELETING TOKENS. IF YOU DELETE A TOKEN YOU WILL HAVE TO MANUALLY REMOVE AURAS.
-
 Manifest URL: https://github.com/Cactuar87/Pathfinder-Aura-Share/raw/main/module.json
 
 Add a buff to a PF1E actor. Name it whatever you'd like.
@@ -24,8 +22,14 @@ Removes the buff if:
 -The source moves out of range.
 -The recipient moves out of range.
 -The source disabled the buff, and the buff does not have the "alliesOnly" flag set to "true"
+-The source Token is deleted from the scene.
 
 Note: It does not apply the buff the moment a token is created. Rather, it does it on move/click/update. This will be addressed later.
 
 
 Example: https://imgur.com/N6J8xKb
+
+
+Updates
+(v1.1.0) Token Deletion now triggers the disabling of an aura.)
+(v1.0.10) Code cleanup to improve readability and speed up processing of auras.
