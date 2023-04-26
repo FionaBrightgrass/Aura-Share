@@ -14,10 +14,13 @@ Name becomes: Aura Name (Source Actors Name)
 
 Adds the buff to allies if:
 -The source actor has a buff with a radius > 0 and the buff is enabled, or:
--The source actor's buff has the "alliesOnly" dictionary flag set to "true", it shares the buff even if it's disabled.
+-The source actor's buff has the "shareInactive" Boolean flag, it shares the buff even if it's disabled.
   Alternatively, you can name the flag "shareInactive" if that makes more sense to you. Either works.
   (This allows for buffs to be araus that don't aid the source)
   (alliesOnly = "true" + buff disabled)
+ 
+Adds the buff to enemies if:
+-The buff also has a "shareEnemies" Boolean Flag. You typically would combine this with ShareInactive so that the buff doesn't hurt the source actor.
  
 Removes the buff if:
 -The source dies.
