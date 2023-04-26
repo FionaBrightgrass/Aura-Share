@@ -5,19 +5,22 @@ Manifest URL: https://github.com/Cactuar87/Pathfinder-Aura-Share/raw/main/module
 Add a buff to a PF1E actor. Name it whatever you'd like.
 
 Give the aura actor a Dictionary Flag of "radius" with a value greater than 0.
-optional: Give the aura a Boolean Flag of shareInactive to allow sharing of disabled auras. (Adding it as a dictionary flag will automatically apply the boolean flag...)
+optional: Give the aura a Boolean Flag of shareInactive to allow sharing of disabled auras. 
+(Since this was changed in an update, adding it as a dictionary flag (legacy) will automatically apply the boolean flag...)
 
 It will auto copy to other tokens except with:
-Name becomes: Aura Name (Source Actors Name)
+The new buff name becomes: Aura Name (Source Actors Name)
 "radius" is set to 0 on the recipient
 
-
 Adds the buff to allies if:
--The source actor has a buff with a radius > 0 and the buff is enabled, or:
--The source actor's buff has the "alliesOnly" dictionary flag set to "true", it shares the buff even if it's disabled.
+-The source actor has a buff with a radius > 0.
+-The buff is enabled, OR if the source actor's buff has the "shareInactive" Boolean flag, it shares the buff even if it's disabled.
   Alternatively, you can name the flag "shareInactive" if that makes more sense to you. Either works.
-  (This allows for buffs to be araus that don't aid the source)
-  (alliesOnly = "true" + buff disabled)
+  (This allows for buffs to be auras that don't aid the source)
+  (shareInactive + buff disabled)
+ 
+Adds the buff to enemies if:
+-The buff also has a "shareEnemies" Boolean Flag. You typically would combine this with "shareInactive" so that the buff doesn't hurt the source actor.
  
 Removes the buff if:
 -The source dies.
@@ -26,12 +29,22 @@ Removes the buff if:
 -The source disabled the buff, and the buff does not have the "alliesOnly" flag set to "true"
 -The source Token is deleted from the scene.
 
-Note: It does not apply the buff the moment a token is created. Rather, it does it on move/click/update. This will be addressed later.
+NOTE: The aura application is currently hooked into Movement (sight refresh) and UpdateToken (click token.) So there may be a momentary delay with aura application.
+NOTE2: It does not apply the buff the moment a token is created. Rather, it does it on move/click/update. This will be addressed later.
 
-
-Example: https://imgur.com/N6J8xKb
+Example: https://github.com/Cactuar87/Pathfinder-Aura-Share/blob/main/AuraExample.png
 
 
 Updates
-(v1.1.0) Token Deletion now triggers the disabling of an aura.)
+(v1.2.0)  Using the shareEnemies Boolean Flag on an aura will switch it to only impact enemies.* 
+          *Combine this with ShareInactive or it will still impact the original token.
+(v1.1.0)  Token Deletion now triggers the disabling of an aura.)
 (v1.0.10) Code cleanup to improve readability and speed up processing of auras.
+
+
+
+Known Bugs:
+-Renaming an aura will not remove the old buff from a token. Rename auras on the character sheet before the token is placed on the scene.
+-Deleting tokens was causing some console errors. If you end up with any weirdness occuring when deleting items from actors sheets, please tell me ASAP. 
+ I had put in some error handling for this errors, and I want to make sure that it doesn't impact the deletion of items, buffs, features from character sheets.
+
