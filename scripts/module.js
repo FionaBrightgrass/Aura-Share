@@ -178,7 +178,6 @@ Hooks.on('sightRefresh',(canvas)=>{
 //I have no idea what the consequences of this will be, but it prevents errors from being thrown when a document is deleted but doesn't have any deletion method defined.
 //It prevents some error spam BS.
 Hooks.on('preDeleteItem', (Document) =>{
-    console.log(Document);
     if(Document._onDelete == undefined || Document._onDelete == 'undefined'){
         return;
     }
