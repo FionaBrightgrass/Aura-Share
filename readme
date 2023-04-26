@@ -10,7 +10,7 @@ optional: Give the aura a Boolean Flag of shareInactive to allow sharing of disa
 
 It will auto copy to other tokens except with:
 The new buff name becomes: Aura Name (Source Actors Name)
-"radius" is set to 0 on the recipient
+"radius" is set to 0 on the recipient 
 
 Adds the buff to allies if:
 -The source actor has a buff with a radius > 0.
