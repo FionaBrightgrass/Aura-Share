@@ -143,7 +143,7 @@ async function DebuffAllies(parentActor){
     if(parentAuras != 'none' && parentAuras != 'undefined' && parentAuras != null){
         let childTokens = canvas.tokens.placeables;
         let targetAuras = [];
-        parentAuras.forEach(parentAura => {
+        parentAuras.forEach(async parentAura => {
             let newAura = parentActor.items.getName(parentAura.name).toObject();
             newAura.name = parentAura.name + " (" + parentActor.name + ")";
             newAura.system.identifiedName = parentAura.name + " (" + parentActor.name + ")";
