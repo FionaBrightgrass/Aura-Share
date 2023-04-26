@@ -18,10 +18,11 @@
 // When a token faints all buffs it offers are removed.
 
 function GetActorAuras(auraActor, getParentAuras){
+    //will filter for parent/child auras automatically using the booleon getParentAuras flag.
     let auras = [];
     if(getParentAuras == true){
         auras = (auraActor.items.filter(o => o.system.flags.dictionary.radius > 0));
-        //Auras with a radius greater than 0 share automatically.
+        //Auras with a radius greater than 0 share.
     }else{
         auras = (auraActor.items.filter(o => o.system.flags.dictionary.radius === 0)); 
         //likewise auras with a radius of 0 do not share.
@@ -88,22 +89,24 @@ async function ApplyActorAuras(parentToken, childToken){
     //Grabs the parent auras of the token that just moved
     if(parentAuras != null && parentAuras != 'undefined' && parentAuras != 'none'){
         parentAuras.forEach(async parentAura => {
-            //Create Aura Copy//
-            let newAura = parentToken.actor.items.getName(parentAura.name).toObject();
-            newAura.name = parentAura.name + " (" + parentToken.name + ")";
-            newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
-            newAura.system.flags.dictionary.radius = 0;
-            newAura.system.active = true;
-            //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
-            let radius = parentAura.getItemDictionaryFlag('radius');
-            let inRange = ((radius != null) && (radius != 'undefined') && (distance <= radius));
-            let shareIfInactive = GetInactiveShareFlag(parentAura);
-            let validateAura = ((parentAura.system.active || shareIfInactive) && inRange && !IsUnconcious(parentToken.actor));
-            //if the buff has a radius but the distance is greater.
-            if(validateAura){
-                AddAura(newAura, childToken);
-            }else{
-                RemoveAura(newAura, childToken);
+            if(CanShareAura(parentToken, childToken, parentAura)){
+                //Create Aura Copy//
+                let newAura = parentToken.actor.items.getName(parentAura.name).toObject();
+                newAura.name = parentAura.name + " (" + parentToken.name + ")";
+                newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
+                newAura.system.flags.dictionary.radius = 0;
+                newAura.system.active = true;
+                //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
+                let radius = parentAura.getItemDictionaryFlag('radius');
+                let inRange = ((radius != null) && (radius != 'undefined') && (distance <= radius));
+                let shareIfInactive = GetInactiveShareFlag(parentAura);
+                let validateAura = ((parentAura.system.active || shareIfInactive) && inRange && !IsUnconcious(parentToken.actor));
+                //if the buff has a radius but the distance is greater.
+                if(validateAura){
+                    AddAura(newAura, childToken);
+                }else{
+                    RemoveAura(newAura, childToken);
+                }
             }
         });
     }
@@ -113,22 +116,34 @@ async function ApplyActorAuras(parentToken, childToken){
 async function ApplyAllAuras(){
     let activeTokens = canvas.tokens.placeables;
     activeTokens.forEach(async activeToken => {
-        let activeTokenDisposition = activeToken.document.disposition;
         let passiveTokens = canvas.tokens.placeables;
         passiveTokens.forEach(passiveToken => {
             if(passiveToken.actor.data.name != activeToken.actor.data.name && passiveToken.document != 'undefined'){
-                //We also don't want the actor to give his buffs to himself.
-                let passiveTokenDisposition = passiveToken.document.disposition;
-                if(passiveTokenDisposition == activeTokenDisposition){
-                        ApplyActorAuras(activeToken, passiveToken);
-                        //Token -> Every ally around them.
-                }
+                ApplyActorAuras(activeToken, passiveToken);
             }
         });
     });
-    //If they're unconcious let's strip the buffs. Just to be safe. There may be a more optimal way of doing this.
     return;
 }
+
+function CanShareAura(parentToken, childToken, aura){
+    //verifies that the aura is set to apply to allies, or else if enemies verifies that target is an enemy.
+    let parentTokenDisposition = parentToken.document.disposition;
+    let childTokenDisposition = childToken.document.disposition;
+    let hostileAura = aura.hasItemBooleanFlag('shareEnemies');
+    if(hostileAura){
+        if(parentTokenDisposition == (childTokenDisposition * -1)){
+            return true;
+        }
+    }
+    else{
+        if(parentTokenDisposition == childTokenDisposition){
+            return true;
+        }
+    }
+    return false;
+}
+
 
 function IsUnconcious(actor){
     let health = actor.system.attributes.hp.value;
