@@ -76,7 +76,7 @@ async function RemoveAura(undesiredAura, childToken){
             };
     });
     if(auraIDsToDelete != 'undefined' && auraIDsToDelete != null && auraIDsToDelete.length > 0){
-        await childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete, _onDelete = {});
+        childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
         //remove the aura documents from the actor
     }
     return;
@@ -172,4 +172,14 @@ Hooks.on('updateActor', (actor) =>{
 Hooks.on('sightRefresh',(canvas)=>{
     //Hook into site being updated when a token finishes moving.
     ApplyAllAuras();
+});
+
+
+//I have no idea what the consequences of this will be, but it prevents errors from being thrown when a document is deleted but doesn't have any deletion method defined.
+//It prevents some error spam BS.
+Hooks.on('preDeleteItem', (Document) =>{
+    console.log(Document);
+    if(Document._onDelete == undefined || Document._onDelete == 'undefined'){
+        return;
+    }
 });
