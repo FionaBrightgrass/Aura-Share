@@ -104,7 +104,7 @@ function GetInactiveShareFlag(aura){
             let inRange = (distance <= radius);
             let shareIfInactive = GetInactiveShareFlag(parentAura);
             let canShareAura = CanShareAura(parentToken, childToken, parentAura) ?? true;
-            let validateAura = ((parentAura.system.active === true || shareIfInactive) && inRange === true  && !IsUnconcious(parentToken.actor) && canShareAura);
+            let validateAura = ((parentAura.system.active || shareIfInactive) && inRange && !IsUnconcious(parentToken.actor) && canShareAura);
             //if the buff has a radius but the distance is greater.
             if(validateAura){
                  AddAura(newAura, childToken);
@@ -119,7 +119,7 @@ function GetInactiveShareFlag(aura){
 function refreshAuras(activeToken){
     let passiveTokens = canvas.tokens.placeables;
     passiveTokens.forEach(passiveToken => {
-        if(passiveToken.name != activeToken.name){
+        if(passiveToken.id != activeToken.id){
             if(GetActorAuras(passiveToken.actor, true)){
                 ApplyActorAuras(passiveToken, activeToken);
                 //Main token moved, let's see if it lost anyone's auras.
@@ -213,7 +213,7 @@ Hooks.on('destroyToken', (PlaceableObject) =>{
 });
 */
 
-Hooks.on('pf1.toggleActorBuff',  (actor, itemData) =>{
+Hooks.on('pf1ToggleActorBuff',  (actor, itemData) =>{
     let tokens = actor.getActiveTokens();
     if(tokens?.length > 0 && shouldHandle() && itemData.getItemDictionaryFlag('radius') > 0){
         refreshAuras(tokens[0]);
