@@ -216,6 +216,7 @@ Hooks.on('destroyToken', (PlaceableObject) =>{
 Hooks.on('pf1.toggleActorBuff',  (actor, itemData) =>{
     tokens = actor.getActiveTokens();
     if(tokens != undefined && shouldHandle() && itemData.getItemDictionaryFlag('radius') > 0){
+        console.log(tokens);
         refreshAuras(tokens[0]);
     }
 })
