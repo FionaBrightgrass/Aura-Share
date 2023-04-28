@@ -1,6 +1,6 @@
 //Synopsis: Copies aura buffs between actors in the Pathfinder 1.E system in FoundryVTT
 //
-//Create by:   Jeremy/Cactuar       
+//Create by:   Cactuar       
 //Date:         4/19/23
 //
 //Details:
