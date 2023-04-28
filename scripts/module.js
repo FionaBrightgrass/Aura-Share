@@ -77,11 +77,8 @@ function GetInactiveShareFlag(aura){
             };
     });
     if(auraIDsToDelete?.length > 0){
-        console.log(childToken.actor.effects);
         let activeEffects = (childToken.actor.effects.filter(o => o.label == undesiredAura.name));
         let effectsToDelete = activeEffects.map(a => a.id);
-        console.log('effects list:');
-        console.log(effectsToDelete);
         //childToken.actor.deleteEmbeddedDocuments("ActiveEffect", effectsToDelete);
         childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
         //remove the aura documents from the actor
@@ -102,7 +99,6 @@ function GetInactiveShareFlag(aura){
             newAura.system.flags.dictionary.radius = 0;
             newAura.system.active = true;
             newAura._id = randomID();
-            console.log(newAura);
             //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
             let radius = parentAura.getItemDictionaryFlag('radius');
             let inRange = (distance <= radius);
@@ -110,7 +106,6 @@ function GetInactiveShareFlag(aura){
             let canShareAura = CanShareAura(parentToken, childToken, parentAura) ?? true;
             let validateAura = ((parentAura.system.active === true || shareIfInactive) && inRange === true  && !IsUnconcious(parentToken.actor) && canShareAura);
             //if the buff has a radius but the distance is greater.
-            console.log(validateAura);
             if(validateAura){
                  AddAura(newAura, childToken);
             }else{
@@ -204,9 +199,7 @@ const shouldHandle = () => {
 
 
 Hooks.on('updateToken', (token, update, _options, _userId) => {
-    console.log(update);
     if(shouldHandle() && (update?.hasOwnProperty('x') || update?.hasOwnProperty('y'))){
-        console.log("refreshing auras");
         refreshAuras(token);
     }
     return;
@@ -222,7 +215,7 @@ Hooks.on('destroyToken', (PlaceableObject) =>{
 
 Hooks.on('pf1.toggleActorBuff',  (actor, itemData) =>{
     tokens = actor.getActiveTokens();
-    if(tokens && shouldHandle() && itemData.getItemDictionaryFlag('radius') > 0){
+    if(tokens != undefined && shouldHandle() && itemData.getItemDictionaryFlag('radius') > 0){
         refreshAuras(tokens[0]);
     }
 })
