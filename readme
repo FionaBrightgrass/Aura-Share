@@ -36,9 +36,9 @@ Example: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/blob/main/Aur
 
 
 Updates
+(v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.
 (v1.2.0)  Using the shareEnemies Boolean Flag on an aura will switch it to only impact enemies.* 
           *Combine this with ShareInactive or it will still impact the original token.
-(v1.1.0)  Token Deletion now triggers the disabling of an aura.)
 (v1.0.10) Code cleanup to improve readability and speed up processing of auras.
 
 
