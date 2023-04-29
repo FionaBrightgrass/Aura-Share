@@ -56,6 +56,7 @@ NOTE2: It does not apply the buff the moment a token is created. Rather, it does
 
 
 Updates
+(v1.3.2)  Actors with an item, buff, etc named "Diehard" will now continue to share their auras when below 0 HP.
 (v1.3.1)  Delete Token, Create Token are now working. Deleting a token removes inherited buffs. Tokens hitting negative HP now triggers immediately.
 (v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.
 (v1.2.0)  Using the shareEnemies Boolean Flag on an aura will switch it to only impact enemies.* 
