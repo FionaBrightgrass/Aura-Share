@@ -1,13 +1,18 @@
+----------------This if for: Pathfinder 1E-------------------------------
+
+-----If you enjoy this mod-----
+------Feel free to tip!--------
 https://ko-fi.com/cactuarcrunch
+
 
 Manifest URL: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/raw/main/module.json
 
 
-Cliff Notes:
+--------Cliff Notes--------
 _create the following_
 -Item Type: Buff
 -Dictionary Flag: "radius" & value > 0
--------the buff  now auto shares----------
+___the buff  now auto shares____
 Optional:
 -Boolean Flag: "shareInactive"    -shares even if toggled off. Great for buffs that don't buff yourself, but just allies.
 -Boolean Flag: "shareEnemies"     -Only share the aura with enemies. Typically combined with shareInactive.
@@ -15,8 +20,7 @@ Optional:
 Example: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/blob/main/AuraExample.png
 
 
-
-Better Nots:
+----------------------Better Notes----------------------
 Add a buff to a PF1E actor. Name it whatever you'd like.
 
 Give the aura actor a Dictionary Flag of "radius" with a value greater than 0.
@@ -55,7 +59,9 @@ NOTE: The aura application is currently hooked into Movement (sight refresh) and
 NOTE2: It does not apply the buff the moment a token is created. Rather, it does it on move/click/update. This will be addressed later.
 
 
-Updates
+
+
+---------------Updates------------
 (v1.3.2)  Actors with an item, buff, etc named "Diehard" will now continue to share their auras when below 0 HP.
 (v1.3.1)  Delete Token, Create Token are now working. Deleting a token removes inherited buffs. Tokens hitting negative HP now triggers immediately.
 (v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.
@@ -64,8 +70,7 @@ Updates
 (v1.0.10) Code cleanup to improve readability and speed up processing of auras.
 
 
-Known Bugs:
--Renaming an aura will not remove the old buff from a token. Rename auras on the character sheet before the token is placed on the scene.
--Deleting tokens was causing some console errors. If you end up with any weirdness occuring when deleting items from actors sheets, please tell me ASAP. 
- I had put in some error handling for this errors, and I want to make sure that it doesn't impact the deletion of items, buffs, features from character sheets.
 
+
+--------Potential Changes in Future Updates---------
+-Renaming an aura will not remove the old buff from a token. Rename auras on the character sheet before the token is placed on the scene.
