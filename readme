@@ -9,13 +9,13 @@ Manifest URL: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/raw/main
 
 
 --------Cliff Notes--------
-_create the following_
+_create the following:
 -Item Type: Buff
 -Dictionary Flag: "radius" & value > 0
-___the buff  now auto shares____
-Optional:
--Boolean Flag: "shareInactive"    -shares even if toggled off. Great for buffs that don't buff yourself, but just allies.
--Boolean Flag: "shareEnemies"     -Only share the aura with enemies. Typically combined with shareInactive.
+....the buff  now auto shares
+_Optional:
+-Boolean Flag: "shareInactive"    __share the buff even if it is toggled off. Great for buffs that don't buff an actor, but just their nearby allies.
+-Boolean Flag: "shareEnemies"     __share the aura with enemies (instead of allies). Typically combined with shareInactive.
 
 Example: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/blob/main/AuraExample.png
 
