@@ -2,6 +2,19 @@ https://ko-fi.com/cactuarcrunch
 
 Manifest URL: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/raw/main/module.json
 
+
+Cliff Notes:
+_create the following_
+-Item Type: Buff
+-Dictionary Flag: "radius" & value > 0
+-------the buff  now auto shares----------
+Optional:
+-Boolean Flag: "shareInactive"    -shares even if toggled off. Great for buffs that don't buff yourself, but just allies.
+-Boolean Flag: "shareEnemies"     -Only share the aura with enemies. Typically combined with shareInactive.
+
+
+
+Better Nots:
 Add a buff to a PF1E actor. Name it whatever you'd like.
 
 Give the aura actor a Dictionary Flag of "radius" with a value greater than 0.
