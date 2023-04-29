@@ -2,6 +2,21 @@ https://ko-fi.com/cactuarcrunch
 
 Manifest URL: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/raw/main/module.json
 
+
+Cliff Notes:
+_create the following_
+-Item Type: Buff
+-Dictionary Flag: "radius" & value > 0
+-------the buff  now auto shares----------
+Optional:
+-Boolean Flag: "shareInactive"    -shares even if toggled off. Great for buffs that don't buff yourself, but just allies.
+-Boolean Flag: "shareEnemies"     -Only share the aura with enemies. Typically combined with shareInactive.
+
+Example: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/blob/main/AuraExample.png
+
+
+
+Better Nots:
 Add a buff to a PF1E actor. Name it whatever you'd like.
 
 Give the aura actor a Dictionary Flag of "radius" with a value greater than 0.
@@ -39,15 +54,13 @@ Removes the buff when:
 NOTE: The aura application is currently hooked into Movement (sight refresh) and UpdateToken (click token.) So there may be a momentary delay with aura application.
 NOTE2: It does not apply the buff the moment a token is created. Rather, it does it on move/click/update. This will be addressed later.
 
-Example: https://github.com/FionaBrightgrass/Pathfinder-Aura-Share/blob/main/AuraExample.png
-
 
 Updates
+(v1.3.1)  Delete Token, Create Token are now working. Deleting a token removes inherited buffs. Tokens hitting negative HP now triggers immediately.
 (v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.
 (v1.2.0)  Using the shareEnemies Boolean Flag on an aura will switch it to only impact enemies.* 
           *Combine this with ShareInactive or it will still impact the original token.
 (v1.0.10) Code cleanup to improve readability and speed up processing of auras.
-
 
 
 Known Bugs:
