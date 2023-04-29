@@ -17,14 +17,15 @@
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
        
-function GetActorAuras(auraActor, getParentAuras){
-    //will filter for parent/child auras automatically using the booleon getParentAuras flag.
+function GetAuras(token, getParentAuras){
+    //will filter for parent/child auras automatically using the booleon getParentAuras flag.;
+    let auraActor = token.getActor();
     let auras = [];
     if(getParentAuras == true){
-        auras = (auraActor.items.filter(o => o.system.flags.dictionary.radius > 0));
+        auras = (auraActor.items?.filter(o => o.system?.flags?.dictionary?.radius > 0));
         //Auras with a radius greater than 0 share.
     }else{
-        auras = (auraActor.items.filter(o => o.system.flags.dictionary.radius === 0)); 
+        auras = (auraActor.items?.filter(o => o.system?.flags?.dictionary?.radius === 0)); 
         //likewise auras with a radius of 0 do not share.
     }
     return auras ?? null;
@@ -55,31 +56,33 @@ function GetInactiveShareFlag(aura){
 }
 
 
- function AddAura(aura, childToken){
-    let filteredChildAuras = childToken.actor.items.filter(o => o.system.identifiedName == aura.system.identifiedName);
-    //just double check that the aura isn't present.
-    if(filteredChildAuras.length == 0){
-         childToken.actor.createEmbeddedDocuments('Item', aura);
+ function AddAuras(auras, childToken){
+    let aurasToAdd = [];
+    let childActor = childToken.getActor();
+    //we're making an array containing aura objects, but only if the aura doesn't exist in the actor's collection.
+    auras.forEach(aura => {
+        if(!childActor.items.getName(aura.name)){
+            aurasToAdd.push(aura);
+        }
+    });
+    if(aurasToAdd?.length > 0){
+         childToken.actor.createEmbeddedDocuments('Item', aurasToAdd);
         //This is where the aura is granted.
     }
     return;
 }
 
- function RemoveAura(undesiredAura, childToken){
-    let childAuras = GetActorAuras(childToken.actor, false);
+ function RemoveAuras(auras, childToken){
+    let childActor = childToken.getActor();
     let auraIDsToDelete = [];
-    //we're making an array containing aura objects, but only if the name matches an existing aura. It'll be 0-1 length array. deleteEmbeddedDocuments expects an array.
-    childAuras.forEach(childAura => {
-            if(undesiredAura.name === childAura.system.identifiedName){
-                if (childToken.actor.getEmbeddedDocument('Item', childAura.id)){
-                    auraIDsToDelete.push(childAura.id);
-                }
-            };
+    //we're making an array containing aura objects, but only if the name matches an existing aura.
+    auras.forEach(aura => {
+        let foundAura = childActor.items.getName(aura.name)
+        if(foundAura){
+            auraIDsToDelete.push(foundAura._id);
+        }
     });
     if(auraIDsToDelete?.length > 0){
-        let activeEffects = (childToken.actor.effects.filter(o => o.label == undesiredAura.name));
-        let effectsToDelete = activeEffects.map(a => a.id);
-        //childToken.actor.deleteEmbeddedDocuments("ActiveEffect", effectsToDelete);
         childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
         //remove the aura documents from the actor
     }
@@ -88,52 +91,70 @@ function GetInactiveShareFlag(aura){
 
  function ApplyActorAuras(parentToken, childToken){
     let distance = canvas.grid.measureDistance(childToken, parentToken); 
-    let parentAuras = GetActorAuras(parentToken.actor, true);
+    let parentAuras = GetAuras(parentToken, true);
+    let aurasToAdd = [];
+    let aurasToRemove = [];
     //Grabs the parent auras of the token that just moved
     if(parentAuras?.length > 0 && distance != undefined){
         parentAuras.forEach( parentAura => {
             //Create Aura Copy//
-            let newAura = parentToken.actor.items.getName(parentAura.name).toObject();
+            let parentActor = parentToken.getActor();
+            let newAura = parentActor.items.getName(parentAura.name).toObject();
             newAura.name = parentAura.name + " (" + parentToken.name + ")";
             newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
             newAura.system.flags.dictionary.radius = 0;
             newAura.system.active = true;
-            newAura._id = randomID();
+            newAura.id = parentAura.id;
             //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
             let radius = parentAura.getItemDictionaryFlag('radius');
             let inRange = (distance <= radius);
             let shareIfInactive = GetInactiveShareFlag(parentAura);
             let canShareAura = CanShareAura(parentToken, childToken, parentAura) ?? true;
-            let validateAura = ((parentAura.system.active === true || shareIfInactive) && inRange === true  && !IsUnconcious(parentToken.actor) && canShareAura);
+            let validateAura = ((parentAura.system.active || shareIfInactive) && inRange && !IsUnconcious(parentActor) && canShareAura);
             //if the buff has a radius but the distance is greater.
             if(validateAura){
-                 AddAura(newAura, childToken);
+                 aurasToAdd.push(newAura);
             }else{
-                 RemoveAura(newAura, childToken);
+                 aurasToRemove.push(newAura);
             }
         });
+    }
+    if(aurasToAdd.length > 0){
+        AddAuras(aurasToAdd, childToken);
+    }
+    if(aurasToRemove.length > 0){
+        RemoveAuras(aurasToRemove, childToken);
     }
     return;
 }
 
-function refreshAuras(activeToken){
-    let passiveTokens = canvas.tokens.placeables;
+function refreshAuras(activeToken, deleteOnly){
+    let passiveTokens = [];
+    let scene = activeToken.scene ?? activeToken.parent;
+    passiveTokens = scene.tokens;
     passiveTokens.forEach(passiveToken => {
-        if(passiveToken.name != activeToken.name){
-            if(GetActorAuras(passiveToken.actor, true)){
-                ApplyActorAuras(passiveToken, activeToken);
-                //Main token moved, let's see if it lost anyone's auras.
+        if(passiveToken?.id != activeToken?.id){
+            if(!deleteOnly){
+                if(GetAuras(passiveToken, true)){
+                    ApplyActorAuras(passiveToken, activeToken);
+                    //Main token moved, let's see if it lost anyone's auras.
+                }
+                ApplyActorAuras(activeToken, passiveToken);
             }
-            ApplyActorAuras(activeToken, passiveToken);
+            else{
+                clearAuras(activeToken, passiveToken);
+            }
+
         }
     });
     return;
 }
 
+
 function CanShareAura(parentToken, childToken, aura){
     //verifies that the aura is set to apply to allies, or else if enemies verifies that target is an enemy.
-    let parentTokenDisposition = parentToken.document?.disposition ?? parentToken.disposition
-    let childTokenDisposition = childToken.document?.disposition ?? childToken.disposition
+    let parentTokenDisposition = parentToken.disposition;
+    let childTokenDisposition = childToken.disposition;
     let hostileAura = aura.hasItemBooleanFlag('shareEnemies');
     if(hostileAura){
         if(parentTokenDisposition == (childTokenDisposition * -1)){
@@ -157,24 +178,24 @@ function IsUnconcious(actor){
     return false;
 }
 
-function DebuffAllies(parentActor){
-    let parentAuras = GetActorAuras(parentActor, true);
-    let childTokens = canvas.tokens.placeables;
-    if(parentAuras?.length > 0){
-        let targetAuras = [];
-        parentAuras.forEach(parentAura => {
+function clearAuras(parentToken, childToken){
+    let parentAuras = GetAuras(parentToken, true);
+    let aurasToRemove = [];
+    if(parentAuras?.length > 0 ){
+        parentAuras.forEach( parentAura => {
+            //Create Aura Copy//
+            let parentActor = parentToken.getActor();
             let newAura = parentActor.items.getName(parentAura.name).toObject();
-            newAura.name = parentAura.name + " (" + parentActor.name + ")";
-            newAura.system.identifiedName = parentAura.name + " (" + parentActor.name + ")";
-            targetAuras.push(newAura);
+            newAura.name = parentAura.name + " (" + parentToken.name + ")";
+            newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
+            newAura.system.flags.dictionary.radius = 0;
+            newAura.system.active = true;
+            newAura.id = parentAura.id;
+            aurasToRemove.push(newAura);
         });
-        childTokens.forEach(childToken => {
-            if(childToken.actor.name != parentActor.name){
-                targetAuras.forEach(targetAura => {
-                    RemoveAura(targetAura, childToken);
-                });
-            }
-        });
+    }
+    if(aurasToRemove.length > 0){
+        RemoveAuras(aurasToRemove, childToken);
     }
     return;
 }
@@ -199,24 +220,39 @@ const shouldHandle = () => {
 
 
 Hooks.on('updateToken', (token, update, _options, _userId) => {
-    if(shouldHandle() && (update?.hasOwnProperty('x') || update?.hasOwnProperty('y'))){
-        refreshAuras(token);
+    if(shouldHandle() && (update?.hasOwnProperty('x') || update?.hasOwnProperty('y') || update?.hasOwnProperty('disposition'))){
+        refreshAuras(token, false);
     }
     return;
 });
 
-/*
-Hooks.on('destroyToken', (PlaceableObject) =>{
+Hooks.on('updateActor', (actor, update, _options, _userId) => {
+    let tokens = actor.getActiveTokens();
+    if(tokens?.length > 0 && shouldHandle() && (update?.system.attributes.hp)){
+        let token = tokens[0].document;
+        refreshAuras(token, false);
+    }
+    return;
+});
+
+Hooks.on('preDeleteToken', (token, _options, _userId) =>{
     if(shouldHandle()){
-        refreshAuras(PlaceableObject);
+        refreshAuras(token, true);
     }    
 });
-*/
 
-Hooks.on('pf1.toggleActorBuff',  (actor, itemData) =>{
+Hooks.on('createToken', (token, _options, _userId) =>{
+    if(shouldHandle()){
+        refreshAuras(token, false);
+    }    
+});
+
+
+Hooks.on('pf1ToggleActorBuff',  (actor, itemData) =>{
     let tokens = actor.getActiveTokens();
     if(tokens?.length > 0 && shouldHandle() && itemData.getItemDictionaryFlag('radius') > 0){
-        refreshAuras(tokens[0]);
+        let token = tokens[0].document;
+        refreshAuras(token, false);
     }
 })
 
