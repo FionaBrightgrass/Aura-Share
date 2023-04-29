@@ -172,7 +172,7 @@ function CanShareAura(parentToken, childToken, aura){
 
 function IsUnconcious(actor){
     let health = actor.system.attributes.hp.value;
-    if(health < 1){
+    if(health < 1 && !dieHardCheck(actor)){
         return true;
     }
     return false;
@@ -204,6 +204,15 @@ function clearAllChildAuras(token){
     let auras = GetAuras(token, false);
     if(auras){
         RemoveAuras(auras, token);
+    }
+}
+
+function dieHardCheck(actor){
+    if(actor.items.getName('Diehard')){
+        return true;
+    }
+    else{
+        return false;
     }
 }
 
