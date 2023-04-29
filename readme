@@ -22,12 +22,19 @@ Adds the buff to allies if:
 Adds the buff to enemies if:
 -The buff also has a "shareEnemies" Boolean Flag. You typically would combine this with "shareInactive" so that the buff doesn't hurt the source actor.
  
-Removes the buff if:
+Adds the Buff when:
+-A new buff has a radius set to > 0 and the token moves or the buff is toggled. Best to create it on the actor then add to scene.
+-The buff is toggled on.
+-A token with an aura buff is added to the scene. (radius > 0)
+-The actor's HP increases over 0, and the actor was previously dead.
+-An actor moves into range of the buff.
+
+Removes the buff when:
 -The source dies.
 -The source moves out of range.
 -The recipient moves out of range.
 -The source disabled the buff, and the buff does not have the "alliesOnly" flag set to "true"
----It does not delete if: The source Token is deleted from the scene.
+-The source is deleted.
 
 NOTE: The aura application is currently hooked into Movement (sight refresh) and UpdateToken (click token.) So there may be a momentary delay with aura application.
 NOTE2: It does not apply the buff the moment a token is created. Rather, it does it on move/click/update. This will be addressed later.
