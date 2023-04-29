@@ -142,7 +142,7 @@ function refreshAuras(activeToken, deleteOnly){
                 ApplyActorAuras(activeToken, passiveToken);
             }
             else{
-                clearAuras(activeToken, passiveToken);
+                clearSingleAuraSet(activeToken, passiveToken);
             }
 
         }
@@ -178,7 +178,7 @@ function IsUnconcious(actor){
     return false;
 }
 
-function clearAuras(parentToken, childToken){
+function clearSingleAuraSet(parentToken, childToken){
     let parentAuras = GetAuras(parentToken, true);
     let aurasToRemove = [];
     if(parentAuras?.length > 0 ){
@@ -198,6 +198,13 @@ function clearAuras(parentToken, childToken){
         RemoveAuras(aurasToRemove, childToken);
     }
     return;
+}
+
+function clearAllChildAuras(token){
+    let auras = GetAuras(token, false);
+    if(auras){
+        RemoveAuras(auras, token);
+    }
 }
 
 const shouldHandle = () => {
@@ -238,6 +245,7 @@ Hooks.on('updateActor', (actor, update, _options, _userId) => {
 Hooks.on('preDeleteToken', (token, _options, _userId) =>{
     if(shouldHandle()){
         refreshAuras(token, true);
+        clearAllChildAuras(token);
     }    
 });
 
