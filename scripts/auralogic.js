@@ -60,6 +60,9 @@ export class AuraLogic{
         });
         if(auraIDsToDelete?.length > 0){
             childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
+            auraIDsToDelete.forEach(auraID => {
+                game.items.delete(auraID);
+            });
             //remove the aura documents from the actor
         }
         return;
