@@ -1,4 +1,4 @@
-import { AuraLogic } from './AuraLogic.js';
+import { AuraLogic } from './auralogic.js';
 import { Settings } from './settings.js';
 
 
