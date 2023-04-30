@@ -16,7 +16,7 @@
 // Tokens refresh sight at the end of movement by default, so this reduces how often it fires. There's likely a better hook.
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
-export class AuraUtils{
+export class AuraLogic{
     static GetAuras(token, getParentAuras){
         //will filter for parent/child auras automatically using the booleon getParentAuras flag.;
         let auraActor = token.getActor();
@@ -170,7 +170,7 @@ export class AuraUtils{
 
 
     static IsUnconscious(actor){
-        let unconsciousAuras = game.settings.get('Pathfinder-Aura-Share', 'UnconsciousAuras');
+        let unconsciousAuras = game.settings.get('aurashare', 'UnconsciousAuras');
         if (unconsciousAuras){
             return false;
         }
@@ -211,7 +211,7 @@ export class AuraUtils{
     }
 
     static dieHardCheck(actor){
-        let diehardEnabled = game.settings.get('Pathfinder-Aura-Share', 'Diehard');
+        let diehardEnabled = game.settings.get('aurashare', 'Diehard');
         if(actor.items.getName('Diehard') && diehardEnabled){
             return true;
         }
@@ -238,13 +238,3 @@ export class AuraUtils{
         return activeGMs[0] === game.user;
     }
 }
-
-
-
-/*
-Hooks.on('sightRefresh',  (canvas)=>{
-    if(shouldHandle()){
-        ApplyAllAuras();
-    }
-});
-*/

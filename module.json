@@ -1,7 +1,7 @@
 {
-    "id": "Pathfinder-Aura-Share",
-    "name": "Pathfinder-Aura-Share",
-    "title": "Pathfinder Aura Share",
+    "id": "aurashare",
+    "name": "aurashare",
+    "title": "Aura Share",
     "description": "Automates auras in PF 1.E VTT",
     "version": "1.4.0",
     "esmodules": [
@@ -9,8 +9,8 @@
       ],
     "authors": [
       {
-        "name": "Cactuar",
-        "url": "https://github.com/Cactuar87/",
+        "name": "Cactuar/Fiona",
+        "url": "https://github.com/FionaBrightgrass/",
         "discord": "Cactuar#3425"
       }
     ],
