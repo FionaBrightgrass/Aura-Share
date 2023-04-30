@@ -4,7 +4,7 @@ import { Settings } from './settings.js';
 
 let sceneTokens = [];
 
-Hooks.once('canvasInit', (_canvas) => { 
+Hooks.once('canvasInit', (_canvas) => {  
     if(AuraLogic.shouldHandle()){
         sceneTokens = AuraLogic.createTokenArray();
     }
