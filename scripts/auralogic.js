@@ -17,6 +17,9 @@
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
 export class AuraLogic{
+
+
+
     static GetAuras(token, getParentAuras){
         //will filter for parent/child auras automatically using the booleon getParentAuras flag.;
         let auraActor = token.getActor();
@@ -30,31 +33,6 @@ export class AuraLogic{
         }
         return auras ?? null;
     }
-
-    static GetInactiveShareFlag(aura){
-        //this is mainly a cleanup script for old methods.
-        let shareAura = false;
-        if(aura.getItemDictionaryFlag("shareInactive") == "true"){
-            if(!aura.hasItemBooleanFlag('shareInactive')){
-                aura.addItemBooleanFlag('shareInactive');
-            }
-            aura.removeItemDictionaryFlag('shareInactive');
-            shareAura = true;
-        }
-        if(aura.getItemDictionaryFlag("alliesOnly") == "true"){
-            if(!aura.hasItemBooleanFlag('shareInactive')){
-                aura.addItemBooleanFlag('shareInactive');
-            }
-            aura.removeItemDictionaryFlag('alliesOnly');
-            shareAura = true;
-        }
-        if(aura.hasItemBooleanFlag('shareInactive')){
-            shareAura = true;
-        }
-        //we're running a repair on old methodology.
-        return shareAura;
-    }
-
 
     static AddAuras(auras, childToken){
         let aurasToAdd = [];
@@ -87,6 +65,35 @@ export class AuraLogic{
             //remove the aura documents from the actor
         }
         return;
+    }
+    
+    static clearSingleAuraSet(parentToken, childToken){
+        let parentAuras = this.GetAuras(parentToken, true);
+        let aurasToRemove = [];
+        if(parentAuras?.length > 0 ){
+            parentAuras.forEach( parentAura => {
+                //Create Aura Copy//
+                let parentActor = parentToken.getActor();
+                let newAura = parentActor.items.getName(parentAura.name).toObject();
+                newAura.name = parentAura.name + " (" + parentToken.name + ")";
+                newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
+                newAura.system.flags.dictionary.radius = 0;
+                newAura.system.active = true;
+                newAura.id = parentAura.id;
+                aurasToRemove.push(newAura);
+            });
+        }
+        if(aurasToRemove.length > 0){
+            this.RemoveAuras(aurasToRemove, childToken);
+        }
+        return;
+    }
+
+    static clearAllChildAuras(token){
+        let auras = this.GetAuras(token, false);
+        if(auras){
+            this.RemoveAuras(auras, token);
+        }
     }
 
     static ApplyActorAuras(parentToken, childToken){
@@ -128,10 +135,7 @@ export class AuraLogic{
         return;
     }
 
-    static refreshAuras(activeToken, deleteOnly){
-        let passiveTokens = [];
-        let scene = activeToken.scene ?? activeToken.parent;
-        passiveTokens = scene.tokens;
+    static refreshAuras(activeToken, passiveTokens, deleteOnly){
         passiveTokens.forEach(passiveToken => {
             if(passiveToken?.id != activeToken?.id){
                 if(!deleteOnly){
@@ -139,7 +143,9 @@ export class AuraLogic{
                         this.ApplyActorAuras(passiveToken, activeToken);
                         //Main token moved, let's see if it lost anyone's auras.
                     }
-                    this.ApplyActorAuras(activeToken, passiveToken);
+                    if(this.GetAuras(passiveToken, true)){
+                        this.ApplyActorAuras(activeToken, passiveToken);
+                    }
                 }
                 else{
                     this.clearSingleAuraSet(activeToken, passiveToken);
@@ -168,6 +174,30 @@ export class AuraLogic{
         return false;
     }
 
+    static GetInactiveShareFlag(aura){
+        //this is mainly a cleanup script for old methods.
+        let shareAura = false;
+        if(aura.getItemDictionaryFlag("shareInactive") == "true"){
+            if(!aura.hasItemBooleanFlag('shareInactive')){
+                aura.addItemBooleanFlag('shareInactive');
+            }
+            aura.removeItemDictionaryFlag('shareInactive');
+            shareAura = true;
+        }
+        if(aura.getItemDictionaryFlag("alliesOnly") == "true"){
+            if(!aura.hasItemBooleanFlag('shareInactive')){
+                aura.addItemBooleanFlag('shareInactive');
+            }
+            aura.removeItemDictionaryFlag('alliesOnly');
+            shareAura = true;
+        }
+        if(aura.hasItemBooleanFlag('shareInactive')){
+            shareAura = true;
+        }
+        //we're running a repair on old methodology.
+        return shareAura;
+    }
+
 
     static IsUnconscious(actor){
         let unconsciousAuras = game.settings.get('aurashare', 'UnconsciousAuras');
@@ -179,35 +209,6 @@ export class AuraLogic{
             return true;
         }
         return false;
-    }
-
-    static clearSingleAuraSet(parentToken, childToken){
-        let parentAuras = this.GetAuras(parentToken, true);
-        let aurasToRemove = [];
-        if(parentAuras?.length > 0 ){
-            parentAuras.forEach( parentAura => {
-                //Create Aura Copy//
-                let parentActor = parentToken.getActor();
-                let newAura = parentActor.items.getName(parentAura.name).toObject();
-                newAura.name = parentAura.name + " (" + parentToken.name + ")";
-                newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
-                newAura.system.flags.dictionary.radius = 0;
-                newAura.system.active = true;
-                newAura.id = parentAura.id;
-                aurasToRemove.push(newAura);
-            });
-        }
-        if(aurasToRemove.length > 0){
-            this.RemoveAuras(aurasToRemove, childToken);
-        }
-        return;
-    }
-
-    static clearAllChildAuras(token){
-        let auras = this.GetAuras(token, false);
-        if(auras){
-            this.RemoveAuras(auras, token);
-        }
     }
 
     static dieHardCheck(actor){
@@ -236,5 +237,16 @@ export class AuraLogic{
                 return -1;
             });
         return activeGMs[0] === game.user;
+    }
+
+    static createTokenArray(){
+        console.log("Aura Share is initializing a new Token Array");
+        return canvas.tokens.placeables;
+    }
+
+    static refreshTokenArray(activeToken){
+        console.log("Aura Share is refreshing the token array.");
+        let scene = activeToken.scene ?? activeToken.parent;
+        return scene.tokens;
     }
 }
