@@ -21,7 +21,7 @@ _optional:
 Example: https://github.com/FionaBrightgrass/Aura-Share/blob/main/AuraExample.png
 
 
-----------------------Better Notes----------------------
+----------------------Steps----------------------
 Add a buff to a PF1E actor. Name it whatever you'd like.
 
 Give the buff/aura a Dictionary Flag of "radius" with a value greater than 0.
@@ -59,7 +59,7 @@ Adds the Buff when:
 Removes the buff when:
 -The source moves out of range.
 -The recipient moves out of range.
--The source disables the buff, and the buff does not have the "alliesOnly" flag set to "true"
+-The source disables the buff, and the buff does not have the "alliesOnly" Boolean Flag
 -The source is deleted.
 -The source's HP falls below zero, unless: It has the Diehard feat -OR- Unconscious Auras is toggled OFF in the menus.
 
