@@ -4,11 +4,14 @@ import { Settings } from './settings.js';
 
 let sceneTokens = [];
 
+/*
 Hooks.once('canvasInit', (_canvas) => {  
     if(AuraLogic.shouldHandle()){
         sceneTokens = AuraLogic.createTokenArray();
     }
   });
+*/
+
 
 Hooks.once('i18nInit', () => { 
     Settings.registerSettings();
