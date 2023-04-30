@@ -133,8 +133,6 @@ export class AuraLogic{
     }
 
     static refreshAuras(activeToken, passiveTokens, deleteOnly){
-        console.log("Passive Tokens");
-        console.log(passiveTokens);
         passiveTokens.forEach(passiveToken => {
             if(passiveToken?.id != activeToken?.id){
                 if(!deleteOnly){
