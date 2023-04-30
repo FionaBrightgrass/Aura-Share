@@ -3,7 +3,7 @@
     "name": "aurashare",
     "title": "Aura Share",
     "description": "Automates auras in PF 1.E VTT",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "esmodules": [
         "scripts/aurashare.js"
       ],

@@ -17,9 +17,6 @@
 // Unconcious tokens do not give buffs
 // When a token faints all buffs it offers are removed.
 export class AuraLogic{
-
-
-
     static GetAuras(token, getParentAuras){
         //will filter for parent/child auras automatically using the booleon getParentAuras flag.;
         let auraActor = token.getActor();
@@ -136,6 +133,8 @@ export class AuraLogic{
     }
 
     static refreshAuras(activeToken, passiveTokens, deleteOnly){
+        console.log("Passive Tokens");
+        console.log(passiveTokens);
         passiveTokens.forEach(passiveToken => {
             if(passiveToken?.id != activeToken?.id){
                 if(!deleteOnly){
@@ -240,13 +239,11 @@ export class AuraLogic{
     }
 
     static createTokenArray(){
-        console.log("Aura Share is initializing a new Token Array");
-        return canvas.tokens.placeables;
-    }
-
-    static refreshTokenArray(activeToken){
-        console.log("Aura Share is refreshing the token array.");
-        let scene = activeToken.scene ?? activeToken.parent;
-        return scene.tokens;
+        let tokens = canvas.tokens.placeables;
+        let tokenDocuments = [];
+        tokens?.forEach( token => {
+            tokenDocuments.push(token.document);
+        });
+        return tokenDocuments;
     }
 }
