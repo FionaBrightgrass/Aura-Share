@@ -217,28 +217,6 @@ export class AuraLogic{
         if(actor.items.getName('Diehard') && diehardEnabled){
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
-
-    static shouldHandle = () => {
-        const activeGMs = [...game.users]
-            .filter(u => u.active && u.isGM)
-            .sort((x, y) => {
-                if (x.isGM === y.isGM) {
-                    const idCompare = x.id > y.id ? 1 : -1;
-                    return idCompare;
-                }
-
-                if (x.isGM) {
-                    return 1;
-                }
-
-                return -1;
-            });
-        return activeGMs[0] === game.user;
-    }
-
-
 }
