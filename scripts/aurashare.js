@@ -4,14 +4,21 @@ import { Settings } from './settings.js';
 
 let sceneTokens = [];
 
-/*
+function createTokenArray(){
+    let tokens = canvas.tokens.placeables;
+    let tokenDocuments = [];
+    tokens?.forEach( token => {
+        tokenDocuments.push(token.document);
+    });
+    return tokenDocuments;
+}
+
 Hooks.once('canvasInit', (_canvas) => {  
     if(AuraLogic.shouldHandle()){
-        sceneTokens = AuraLogic.createTokenArray();
+        sceneTokens.length = 0;
+        sceneTokens = createTokenArray();
     }
   });
-*/
-
 
 Hooks.once('i18nInit', () => { 
     Settings.registerSettings();
@@ -20,7 +27,8 @@ Hooks.once('i18nInit', () => {
 Hooks.on('updateToken', (token, update, _options, _userId) => {
     if(AuraLogic.shouldHandle() && (update?.hasOwnProperty('x') || update?.hasOwnProperty('y') || update?.hasOwnProperty('disposition'))){
         if(sceneTokens?.length < 1){
-            sceneTokens = AuraLogic.createTokenArray();
+            sceneTokens.length = 0;
+            sceneTokens = createTokenArray();
         }
         AuraLogic.refreshAuras(token, sceneTokens, false);
     }
@@ -30,7 +38,8 @@ Hooks.on('updateToken', (token, update, _options, _userId) => {
 Hooks.on('updateActor', (actor, update, _options, _userId) => {
     if(AuraLogic.shouldHandle() && update?.system.attributes.hp){
         if(sceneTokens?.length < 1){
-            sceneTokens = AuraLogic.createTokenArray();
+            sceneTokens.length = 0;
+            sceneTokens = createTokenArray();
         }
         let tokens = actor.getActiveTokens();
         if(tokens?.length > 0){
@@ -54,20 +63,23 @@ Hooks.on('deleteToken', (token, _options, _userId) =>{
     }    
 });
 
+
 Hooks.on('createToken', (token, _options, _userId) =>{
     if(AuraLogic.shouldHandle()){
         if(!sceneTokens[0]){
-            sceneTokens = AuraLogic.createTokenArray();
+            sceneTokens.length = 0;
+            sceneTokens = createTokenArray();
         }
         AuraLogic.refreshAuras(token, sceneTokens, false);
-        sceneTokens = AuraLogic.createTokenArray(token);
     }    
 });
+
 
 Hooks.on('pf1ToggleActorBuff',  (actor, itemData) =>{
     if(AuraLogic.shouldHandle() && itemData.getItemDictionaryFlag('radius') > 0){
         if(sceneTokens?.length < 1){
-            sceneTokens = AuraLogic.createTokenArray();
+            sceneTokens.length = 0;
+            sceneTokens = createTokenArray();
         }
         let tokens = actor.getActiveTokens();
         if(tokens?.length > 0){

@@ -240,12 +240,5 @@ export class AuraLogic{
         return activeGMs[0] === game.user;
     }
 
-    static createTokenArray(){
-        let tokens = canvas.tokens.placeables;
-        let tokenDocuments = [];
-        tokens?.forEach( token => {
-            tokenDocuments.push(token.document);
-        });
-        return tokenDocuments;
-    }
+
 }
