@@ -17,6 +17,6 @@
     "minimumCoreVersion": "10.0.0",
     "compatibleCoreVersion": "10",
     "url": "https://github.com/FionaBrightgrass/Aura-Share",
-    "manifest": "https://github.com/FionaBrightgrass/Aura-Share/main/module.json",
-    "download": "https://github.com/FionaBrightgrass/Aura-Share/main/module.zip"
+    "manifest": "https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.json",
+    "download": "https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.zip"
   }
