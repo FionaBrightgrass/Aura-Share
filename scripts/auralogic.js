@@ -90,7 +90,7 @@ export class AuraLogic{
         return;
     }
 
-    static clearAllChildAuras(token){
+    static async clearAllChildAuras(token){
         let auras = this.GetAuras(token, false);
         if(auras){
             this.RemoveAuras(auras, token);
