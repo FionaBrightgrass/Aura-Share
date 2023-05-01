@@ -18,5 +18,13 @@ export class Settings {
                 type: Boolean,     
                 default: true
             });
+            game.settings.register('aurashare', 'DeleteAuras', {
+                name: 'Delete Auras',
+                hint: 'Should auras be deleted when an actor is out of range? (Warning: Performance Hit)',
+                scope: 'world',   
+                config: true,     
+                type: Boolean,     
+                default: false
+            });
     }
 }

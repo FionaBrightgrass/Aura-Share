@@ -33,7 +33,6 @@ export class AuraLogic{
     }
 
     static async AddAuras(auras, childToken){   ///auras is just an object passed in where we're looking for the aura name
-        console.log("AddAura");
         let aurasToAdd = [];
         let childActor = childToken.getActor();
         Promise.all(auras.map(async (aura) => {
@@ -93,7 +92,11 @@ export class AuraLogic{
             }));
         }
         if(aurasToRemove.length > 0){
-            this.deactivateAuras(aurasToRemove, childToken);  //change deactivate
+            if(game.settings.get('aurashare', 'DeleteAuras')){
+                this.removeAuras(aurasToRemove, childToken);
+            }else{
+                this.deactivateAuras(aurasToRemove, childToken);
+            }
         }
         return;
     }
@@ -137,7 +140,11 @@ export class AuraLogic{
             this.AddAuras(aurasToAdd, childToken);
         }
         if(aurasToRemove.length > 0){
-            this.deactivateAuras(aurasToRemove, childToken);
+            if(game.settings.get('aurashare', 'DeleteAuras')){
+                this.removeAuras(aurasToRemove, childToken);
+            }else{
+                this.deactivateAuras(aurasToRemove, childToken);
+            }
         }
         return;
     }
@@ -151,7 +158,6 @@ export class AuraLogic{
                     if(deleteOnly){
                         await this.clearSingleAuraSet(parentToken, giveAuras, childToken);
                     }else{
-                        console.log(1);
                         this.ApplyActorAuras(parentToken, giveAuras, childToken);
                     }
                 }
