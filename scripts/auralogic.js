@@ -32,11 +32,11 @@ export class AuraLogic{
         return auras ?? null;
     }
 
-    static AddAuras(auras, childToken){
+    static async AddAuras(auras, childToken){
         let aurasToAdd = [];
         let childActor = childToken.getActor();
         //we're making an array containing aura objects, but only if the aura doesn't exist in the actor's collection.
-        auras.forEach(aura => {
+        auras.forEach(async aura => {
             if(!childActor.items.getName(aura.name)){
                 aurasToAdd.push(aura);
             }
@@ -48,11 +48,11 @@ export class AuraLogic{
         return;
     }
 
-    static RemoveAuras(auras, childToken){
+    static async RemoveAuras(auras, childToken){
         let childActor = childToken.getActor();
         let auraIDsToDelete = [];
         //we're making an array containing aura objects, but only if the name matches an existing aura.
-        auras.forEach(aura => {
+        auras.forEach(async aura => {
             let foundAura = childActor.items.getName(aura.name)
             if(foundAura){
                 auraIDsToDelete.push(foundAura._id);
@@ -68,11 +68,11 @@ export class AuraLogic{
         return;
     }
     
-    static clearSingleAuraSet(parentToken, childToken){
+    static async clearSingleAuraSet(parentToken, childToken){
         let parentAuras = this.GetAuras(parentToken, true);
         let aurasToRemove = [];
         if(parentAuras?.length > 0 ){
-            parentAuras.forEach( parentAura => {
+            parentAuras.forEach( async parentAura => {
                 //Create Aura Copy//
                 let parentActor = parentToken.getActor();
                 let newAura = parentActor.items.getName(parentAura.name).toObject();
@@ -97,14 +97,14 @@ export class AuraLogic{
         }
     }
 
-    static ApplyActorAuras(parentToken, childToken){
+    static async ApplyActorAuras(parentToken, childToken){
         let distance = canvas.grid.measureDistance(childToken, parentToken); 
         let parentAuras = this.GetAuras(parentToken, true);
         let aurasToAdd = [];
         let aurasToRemove = [];
         //Grabs the parent auras of the token that just moved
         if(parentAuras?.length > 0 && distance != undefined){
-            parentAuras.forEach( parentAura => {
+            parentAuras.forEach( async parentAura => {
                 //Create Aura Copy//
                 let parentActor = parentToken.getActor();
                 let newAura = parentActor.items.getName(parentAura.name).toObject();
@@ -136,7 +136,7 @@ export class AuraLogic{
         return;
     }
 
-    static refreshAuras(activeToken, passiveTokens, deleteOnly){
+    static async refreshAuras(activeToken, passiveTokens, deleteOnly){
         passiveTokens.forEach(passiveToken => {
             if(passiveToken?.id != activeToken?.id){
                 if(!deleteOnly){
