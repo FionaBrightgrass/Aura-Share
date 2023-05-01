@@ -56,18 +56,21 @@ Adds the Buff when:
 -The actor's HP increases over 0, and the actor was previously dead.
 -An actor moves into range of the buff.
 
-Removes the buff when:
+Deactives the buff when:
 -The source moves out of range.
 -The recipient moves out of range.
 -The source disables the buff, and the buff does not have the "alliesOnly" Boolean Flag
--The source is deleted.
 -The source's HP falls below zero, unless: It has the Diehard feat -OR- Unconscious Auras is toggled OFF in the menus.
+
+Removes the buff when:
+-the source is deleted.
 
 
 
 
 
 ---------------Updates------------
+(v1.5.0)  Most stuff runs async now. Auras don't "delete" off of sheets, they just toggle inactive now. (performance reasons.)
 (v1.3.2)  Actors with an item, buff, etc named "Diehard" will now continue to share their auras when below 0 HP.
 (v1.3.1)  Delete Token, Create Token are now working. Deleting a token removes inherited buffs. Tokens hitting negative HP now triggers immediately.
 (v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.
