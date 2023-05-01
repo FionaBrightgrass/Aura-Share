@@ -31,12 +31,9 @@ Hooks.on('canvasTeardown', (_canvas) => {
     }
   });
 
-Hooks.on('updateToken', async(token, update, _options, _userId) => {
+Hooks.on('updateToken', async (token, update, _options, _userId) => {
     if(Utils.shouldHandle() && (update.hasOwnProperty('x') || update.hasOwnProperty('y') || update.hasOwnProperty('disposition'))){
-        if(sceneTokens?.length < 1){
-            sceneTokens.length = 0;
-            sceneTokens = Utils.createTokenArray();
-        }
+        sceneTokens = Utils.createTokenArray();
         AuraLogic.refreshAuras(token, sceneTokens, false);
     }
 });
@@ -58,8 +55,9 @@ Hooks.on('updateActor', async(actor, update, _options, _userId) => {
 
 Hooks.on('preDeleteToken', async(token, _options, _userId) =>{
     if(Utils.shouldHandle()){
+        console.log('predelete');
         AuraLogic.refreshAuras(token, sceneTokens, true);
-        AuraLogic.clearAllChildAuras(token);
+        //AuraLogic.clearAllChildAuras(token);
     }    
 });
 
@@ -73,7 +71,7 @@ Hooks.on('createToken', async(token, _options, _userId) =>{
     if(Utils.shouldHandle()){
         if(!sceneTokens[0]){
             sceneTokens.length = 0;
-            sceneTokens =Utils.createTokenArray();
+            sceneTokens = Utils.createTokenArray();
         }
         AuraLogic.refreshAuras(token, sceneTokens, false);
     }    
@@ -83,7 +81,7 @@ Hooks.on('pf1ToggleActorBuff',  async(actor, itemData) =>{
     if(Utils.shouldHandle() && itemData.getItemDictionaryFlag('radius') > 0){
         if(sceneTokens?.length < 1){
             sceneTokens.length = 0;
-            sceneTokens =Utils.createTokenArray();
+            sceneTokens = Utils.createTokenArray();
         }
         let tokens = actor.getActiveTokens();
         if(tokens?.length > 0){

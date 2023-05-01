@@ -2,8 +2,8 @@
     "id": "aurashare",
     "name": "aurashare",
     "title": "Aura Share",
-    "description": "Automates auras in PF 1.E VTT",
-    "version": "1.4.12",
+    "description": "Automates auras in Pathfinder 1e",
+    "version": "1.5.0",
     "esmodules": [
         "scripts/aurashare.js"
       ],

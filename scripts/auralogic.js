@@ -29,47 +29,60 @@ export class AuraLogic{
             auras = (auraActor.items?.filter(o => o.system?.flags?.dictionary?.radius === 0)); 
             //likewise auras with a radius of 0 do not share.
         }
-        return auras ?? null;
+        return auras;
     }
 
-    static AddAuras(auras, childToken){   ///auras is just an object passed in where we're looking for the aura name
+    static async AddAuras(auras, childToken){   ///auras is just an object passed in where we're looking for the aura name
+        console.log("AddAura");
         let aurasToAdd = [];
         let childActor = childToken.getActor();
-        auras.forEach(aura => {
+        Promise.all(auras.map(async (aura) => {
             let foundAura = childActor.items?.getName(aura.name); ///<-- looking for the name there
             if(!foundAura){
                 aurasToAdd.push(aura);
             }else                       
             {
-                console.log("Setting this aura active:");           ///<------It's printing this + aura name once for each aura..
-                console.log(foundAura);
                 foundAura.setActive(true);                         /// But only the last aura to "setActive" gets displayed on the token.
             }
-        });
+        }));
         if(aurasToAdd?.length > 0){
             childToken.actor.createEmbeddedDocuments('Item', aurasToAdd);   ///This just creates a new aura if the actor doesn't have one to toggle on/off.
         }
         return;
     }
 
-    static deactivateAuras(auras, childToken){
+    static async removeAuras(auras, childToken){
         let childActor = childToken.getActor();
-        auras.forEach(aura => {
+        let auraIDsToDelete = [];
+        //we're making an array containing aura objects, but only if the name matches an existing aura.
+        Promise.all(auras.map(async (aura) => {
+            let foundAura = childActor.items.getName(aura.name) ?? childActor.getEmbeddedDocument('Item', aura._id);
+            if(foundAura){
+                auraIDsToDelete.push(foundAura._id);
+            }
+        }));
+        if(auraIDsToDelete?.length > 0){
+            childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
+            //remove the aura documents from the actor
+        }
+        return;
+    }
+
+    static async deactivateAuras(auras, childToken){
+        let childActor = childToken.getActor();
+        Promise.all(auras.map(async (aura) => {
             let foundAura = childActor.items?.getName(aura.name);
             if(foundAura){
-                console.log("SHUTTING OFF:");
-                console.log(foundAura);
                 foundAura.setActive(false);
             }
-        });
+        }));
         return;
     }
     
-    static clearSingleAuraSet(parentToken, childToken){
-        let parentAuras = this.GetAuras(parentToken, true);
+    static async clearSingleAuraSet(parentToken, parentAuras, childToken){
         let aurasToRemove = [];
         if(parentAuras?.length > 0 ){
-            parentAuras.forEach( parentAura => {
+            Promise.all(parentAuras.map(async (parentAura) => {
                 //Create Aura Copy//
                 let parentActor = parentToken.getActor();
                 let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
@@ -77,29 +90,28 @@ export class AuraLogic{
                 newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
                 newAura.system.flags.dictionary.radius = 0;
                 aurasToRemove.push(newAura);
-            });
+            }));
         }
         if(aurasToRemove.length > 0){
-            this.deactivateAuras(aurasToRemove, childToken);
+            this.deactivateAuras(aurasToRemove, childToken);  //change deactivate
         }
         return;
     }
 
-    static clearAllChildAuras(token){
+    static async clearAllChildAuras(token){
         let auras = this.GetAuras(token, false);
         if(auras){
-            this.deactivateAuras(auras, token);
+            await this.removeAuras(auras, token);                                               
         }
     }
 
-    static ApplyActorAuras(parentToken, childToken){
+    static async ApplyActorAuras(parentToken, parentAuras, childToken){
         let distance = canvas.grid.measureDistance(childToken, parentToken); 
-        let parentAuras = this.GetAuras(parentToken, true);
         let aurasToAdd = [];
         let aurasToRemove = [];
         //Grabs the parent auras of the token that just moved
         if(parentAuras?.length > 0 && distance != undefined){
-            parentAuras.forEach( parentAura => {
+            Promise.all(parentAuras.map(async (parentAura) => {
                 //Create Aura Copy//
                 let parentActor = parentToken.getActor();
                 let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
@@ -119,7 +131,7 @@ export class AuraLogic{
                 }else{
                     aurasToRemove.push(newAura);
                 }
-            });
+            }));
         }
         if(aurasToAdd.length > 0){
             this.AddAuras(aurasToAdd, childToken);
@@ -130,24 +142,43 @@ export class AuraLogic{
         return;
     }
 
-    static refreshAuras(activeToken, passiveTokens, deleteOnly){
-        passiveTokens.forEach(passiveToken => {
-            if(passiveToken?.id != activeToken?.id){
-                if(!deleteOnly){
-                    if(this.GetAuras(passiveToken, true)){
-                        this.ApplyActorAuras(passiveToken, activeToken);
-                        //Main token moved, let's see if it lost anyone's auras.
-                    }
-                    if(this.GetAuras(activeToken, true)){
-                        this.ApplyActorAuras(activeToken, passiveToken);
+    static async refreshAuras(parentToken, childTokens, deleteOnly){
+        let giveAuras = await this.GetAuras(parentToken, true);
+        Promise.all(childTokens.map(async (childToken) => {
+            if(childToken?.id != parentToken?.id){
+                let receiveAuras = this.GetAuras(childToken, true);
+                if(giveAuras?.length > 0){
+                    if(deleteOnly){
+                        await this.clearSingleAuraSet(parentToken, giveAuras, childToken);
+                    }else{
+                        console.log(1);
+                        this.ApplyActorAuras(parentToken, giveAuras, childToken);
                     }
                 }
-                else{
-                    this.clearSingleAuraSet(activeToken, passiveToken);
+                if(receiveAuras?.length > 0){
+                    this.ApplyActorAuras(childToken, receiveAuras, parentToken);
                 }
-
+            }
+        }))
+/*
+        childTokens.forEach( async childToken => {
+            if(childToken?.id != parentToken?.id){
+                let receiveAuras = this.GetAuras(childToken, true);
+                if(giveAuras?.length > 0){
+                    if(deleteOnly){
+                        await this.clearSingleAuraSet(parentToken, giveAuras, childToken);
+                    }else{
+                        console.log(1);
+                        await this.ApplyActorAuras(parentToken, giveAuras, childToken);
+                    }
+                }
+                if(receiveAuras?.length > 0){
+                    await this.ApplyActorAuras(childToken, receiveAuras, parentToken);
+                }
             }
         });
+        */
+
         return;
     }
 
@@ -170,26 +201,10 @@ export class AuraLogic{
     }
 
     static GetInactiveShareFlag(aura){
-        //this is mainly a cleanup script for old methods.
         let shareAura = false;
-        if(aura.getItemDictionaryFlag("shareInactive") == "true"){
-            if(!aura.hasItemBooleanFlag('shareInactive')){
-                aura.addItemBooleanFlag('shareInactive');
-            }
-            aura.removeItemDictionaryFlag('shareInactive');
-            shareAura = true;
-        }
-        if(aura.getItemDictionaryFlag("alliesOnly") == "true"){
-            if(!aura.hasItemBooleanFlag('shareInactive')){
-                aura.addItemBooleanFlag('shareInactive');
-            }
-            aura.removeItemDictionaryFlag('alliesOnly');
-            shareAura = true;
-        }
         if(aura.hasItemBooleanFlag('shareInactive')){
             shareAura = true;
         }
-        //we're running a repair on old methodology.
         return shareAura;
     }
 
