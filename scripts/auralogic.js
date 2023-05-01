@@ -32,87 +32,81 @@ export class AuraLogic{
         return auras ?? null;
     }
 
-    static async AddAuras(auras, childToken){
+    static AddAuras(auras, childToken){   ///auras is just an object passed in where we're looking for the aura name
         let aurasToAdd = [];
         let childActor = childToken.getActor();
-        //we're making an array containing aura objects, but only if the aura doesn't exist in the actor's collection.
-        auras.forEach(async aura => {
-            if(!childActor.items.getName(aura.name)){
+        auras.forEach(aura => {
+            let foundAura = childActor.items?.getName(aura.name); ///<-- looking for the name there
+            if(!foundAura){
                 aurasToAdd.push(aura);
+            }else                       
+            {
+                console.log("Setting this aura active:");           ///<------It's printing this + aura name once for each aura..
+                console.log(foundAura);
+                foundAura.setActive(true);                         /// But only the last aura to "setActive" gets displayed on the token.
             }
         });
         if(aurasToAdd?.length > 0){
-            childToken.actor.createEmbeddedDocuments('Item', aurasToAdd);
-            //This is where the aura is granted.
+            childToken.actor.createEmbeddedDocuments('Item', aurasToAdd);   ///This just creates a new aura if the actor doesn't have one to toggle on/off.
         }
         return;
     }
 
-    static async RemoveAuras(auras, childToken){
+    static deactivateAuras(auras, childToken){
         let childActor = childToken.getActor();
-        let auraIDsToDelete = [];
-        //we're making an array containing aura objects, but only if the name matches an existing aura.
-        auras.forEach(async aura => {
-            let foundAura = childActor.items.getName(aura.name)
+        auras.forEach(aura => {
+            let foundAura = childActor.items?.getName(aura.name);
             if(foundAura){
-                auraIDsToDelete.push(foundAura._id);
+                console.log("SHUTTING OFF:");
+                console.log(foundAura);
+                foundAura.setActive(false);
             }
         });
-        if(auraIDsToDelete?.length > 0){
-            childToken.actor.deleteEmbeddedDocuments('Item', auraIDsToDelete);
-            auraIDsToDelete.forEach(auraID => {
-                game.items.delete(auraID);
-            });
-            //remove the aura documents from the actor
-        }
         return;
     }
     
-    static async clearSingleAuraSet(parentToken, childToken){
+    static clearSingleAuraSet(parentToken, childToken){
         let parentAuras = this.GetAuras(parentToken, true);
         let aurasToRemove = [];
         if(parentAuras?.length > 0 ){
-            parentAuras.forEach( async parentAura => {
+            parentAuras.forEach( parentAura => {
                 //Create Aura Copy//
                 let parentActor = parentToken.getActor();
-                let newAura = parentActor.items.getName(parentAura.name).toObject();
+                let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
                 newAura.name = parentAura.name + " (" + parentToken.name + ")";
                 newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
                 newAura.system.flags.dictionary.radius = 0;
-                newAura.system.active = true;
-                newAura.id = parentAura.id;
                 aurasToRemove.push(newAura);
             });
         }
         if(aurasToRemove.length > 0){
-            this.RemoveAuras(aurasToRemove, childToken);
+            this.deactivateAuras(aurasToRemove, childToken);
         }
         return;
     }
 
-    static async clearAllChildAuras(token){
+    static clearAllChildAuras(token){
         let auras = this.GetAuras(token, false);
         if(auras){
-            this.RemoveAuras(auras, token);
+            this.deactivateAuras(auras, token);
         }
     }
 
-    static async ApplyActorAuras(parentToken, childToken){
+    static ApplyActorAuras(parentToken, childToken){
         let distance = canvas.grid.measureDistance(childToken, parentToken); 
         let parentAuras = this.GetAuras(parentToken, true);
         let aurasToAdd = [];
         let aurasToRemove = [];
         //Grabs the parent auras of the token that just moved
         if(parentAuras?.length > 0 && distance != undefined){
-            parentAuras.forEach( async parentAura => {
+            parentAuras.forEach( parentAura => {
                 //Create Aura Copy//
                 let parentActor = parentToken.getActor();
-                let newAura = parentActor.items.getName(parentAura.name).toObject();
+                let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
                 newAura.name = parentAura.name + " (" + parentToken.name + ")";
                 newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
                 newAura.system.flags.dictionary.radius = 0;
                 newAura.system.active = true;
-                newAura.id = parentAura.id;
                 //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
                 let radius = parentAura.getItemDictionaryFlag('radius');
                 let inRange = (distance <= radius);
@@ -131,12 +125,12 @@ export class AuraLogic{
             this.AddAuras(aurasToAdd, childToken);
         }
         if(aurasToRemove.length > 0){
-            this.RemoveAuras(aurasToRemove, childToken);
+            this.deactivateAuras(aurasToRemove, childToken);
         }
         return;
     }
 
-    static async refreshAuras(activeToken, passiveTokens, deleteOnly){
+    static refreshAuras(activeToken, passiveTokens, deleteOnly){
         passiveTokens.forEach(passiveToken => {
             if(passiveToken?.id != activeToken?.id){
                 if(!deleteOnly){
@@ -144,7 +138,7 @@ export class AuraLogic{
                         this.ApplyActorAuras(passiveToken, activeToken);
                         //Main token moved, let's see if it lost anyone's auras.
                     }
-                    if(this.GetAuras(passiveToken, true)){
+                    if(this.GetAuras(activeToken, true)){
                         this.ApplyActorAuras(activeToken, passiveToken);
                     }
                 }
