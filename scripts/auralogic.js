@@ -15,7 +15,7 @@
 // It will basically add these steps into the game right after sightRefresh.
 // Tokens refresh sight at the end of movement by default, so this reduces how often it fires. There's likely a better hook.
 // Unconcious tokens do not give buffs
-// When a token faints all buffs it offers are removed.
+// When a token faints all buffs it offers are removed
 
 export class AuraLogic{
     static GetAuras(token, getParentAuras){
