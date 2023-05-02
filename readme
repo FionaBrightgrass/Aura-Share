@@ -15,7 +15,7 @@ _create the following:
 -Dictionary Flag: "radius" & value > 0
 ....the buff  now auto shares
 _optional:
--Boolean Flag: "shareInactive"    __share the buff even if it is toggled off. Great for buffs that don't buff an actor, but just their nearby allies.
+-Boolean Flag: "shareInactive"    __share the buff even if it is toggled off. Great for buffs that only impact allies.
 -Boolean Flag: "shareEnemies"     __share the aura with enemies (instead of allies). Typically combined with shareInactive.
 -Boolean Flag: "shareNeutral"     __share the aura with targets with neutral disposition.
 
