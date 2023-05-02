@@ -18,7 +18,8 @@
 // When a token faints all buffs it offers are removed.
 
 export class AuraLogic{
-    static GetAuras(token, getParentAuras){
+
+    static getAuras(token, getParentAuras){
         //will filter for parent/child auras automatically using the booleon getParentAuras flag.;
         let auraActor = token.getActor();
         let auras = [];
@@ -32,20 +33,20 @@ export class AuraLogic{
         return auras;
     }
 
-    static async AddAuras(auras, childToken){   ///auras is just an object passed in where we're looking for the aura name
+    static async addAuras(auras, childToken){  
         let aurasToAdd = [];
         let childActor = childToken.getActor();
         Promise.all(auras.map(async (aura) => {
-            let foundAura = childActor.items?.getName(aura.name); ///<-- looking for the name there
+            let foundAura = childActor.items?.getName(aura.name); 
             if(!foundAura){
                 aurasToAdd.push(aura);
             }else                       
             {
-                foundAura.setActive(true);                         /// But only the last aura to "setActive" gets displayed on the token.
+                foundAura.setActive(true);                         
             }
         }));
         if(aurasToAdd?.length > 0){
-            childToken.actor.createEmbeddedDocuments('Item', aurasToAdd);   ///This just creates a new aura if the actor doesn't have one to toggle on/off.
+            childToken.actor.createEmbeddedDocuments('Item', aurasToAdd); 
         }
         return;
     }
@@ -82,7 +83,6 @@ export class AuraLogic{
         let aurasToRemove = [];
         if(parentAuras?.length > 0 ){
             Promise.all(parentAuras.map(async (parentAura) => {
-                //Create Aura Copy//
                 let parentActor = parentToken.getActor();
                 let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
                 newAura.name = parentAura.name + " (" + parentToken.name + ")";
@@ -102,21 +102,21 @@ export class AuraLogic{
     }
 
     static async clearAllChildAuras(token){
-        let auras = this.GetAuras(token, false);
+        let auras = this.getAuras(token, false);
         if(auras){
             await this.removeAuras(auras, token);                                               
         }
     }
 
-    static async ApplyActorAuras(parentToken, parentAuras, childToken){
+    static async applyActorAuras(parentToken, parentAuras, childToken){
         let distance = canvas.grid.measureDistance(childToken, parentToken); 
         let aurasToAdd = [];
         let aurasToRemove = [];
+        let parentActor = parentToken.getActor();
         //Grabs the parent auras of the token that just moved
         if(parentAuras?.length > 0 && distance != undefined){
             Promise.all(parentAuras.map(async (parentAura) => {
                 //Create Aura Copy//
-                let parentActor = parentToken.getActor();
                 let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
                 newAura.name = parentAura.name + " (" + parentToken.name + ")";
                 newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
@@ -125,10 +125,9 @@ export class AuraLogic{
                 //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
                 let radius = parentAura.getItemDictionaryFlag('radius');
                 let inRange = (distance <= radius);
-                let shareIfInactive = this.GetInactiveShareFlag(parentAura);
-                let canShareAura = this.CanShareAura(parentToken, childToken, parentAura) ?? true;
-                let validateAura = ((parentAura.system.active || shareIfInactive) && inRange && !this.IsUnconscious(parentActor) && canShareAura);
-                //if the buff has a radius but the distance is greater.
+                let shareIfInactive = this.getInactiveShareFlag(parentAura);
+                let canShareAura = this.canShareAura(parentToken, childToken, parentAura) ?? true;
+                let validateAura = ((parentAura.system.active || shareIfInactive) && inRange && !this.isUnconscious(parentActor) && canShareAura);
                 if(validateAura){
                     aurasToAdd.push(newAura);
                 }else{
@@ -137,7 +136,7 @@ export class AuraLogic{
             }));
         }
         if(aurasToAdd.length > 0){
-            this.AddAuras(aurasToAdd, childToken);
+            this.addAuras(aurasToAdd, childToken);
         }
         if(aurasToRemove.length > 0){
             if(game.settings.get('aurashare', 'DeleteAuras')){
@@ -150,45 +149,26 @@ export class AuraLogic{
     }
 
     static async refreshAuras(parentToken, childTokens, deleteOnly){
-        let giveAuras = await this.GetAuras(parentToken, true);
+        let giveAuras = await this.getAuras(parentToken, true);
         Promise.all(childTokens.map(async (childToken) => {
             if(childToken?.id != parentToken?.id){
-                let receiveAuras = this.GetAuras(childToken, true);
+                let receiveAuras = this.getAuras(childToken, true);
                 if(giveAuras?.length > 0){
                     if(deleteOnly){
                         await this.clearSingleAuraSet(parentToken, giveAuras, childToken);
                     }else{
-                        this.ApplyActorAuras(parentToken, giveAuras, childToken);
+                        this.applyActorAuras(parentToken, giveAuras, childToken);
                     }
                 }
                 if(receiveAuras?.length > 0){
-                    this.ApplyActorAuras(childToken, receiveAuras, parentToken);
+                    this.applyActorAuras(childToken, receiveAuras, parentToken);
                 }
             }
         }))
-/*
-        childTokens.forEach( async childToken => {
-            if(childToken?.id != parentToken?.id){
-                let receiveAuras = this.GetAuras(childToken, true);
-                if(giveAuras?.length > 0){
-                    if(deleteOnly){
-                        await this.clearSingleAuraSet(parentToken, giveAuras, childToken);
-                    }else{
-                        console.log(1);
-                        await this.ApplyActorAuras(parentToken, giveAuras, childToken);
-                    }
-                }
-                if(receiveAuras?.length > 0){
-                    await this.ApplyActorAuras(childToken, receiveAuras, parentToken);
-                }
-            }
-        });
-        */
-
         return;
     }
 
-    static CanShareAura(parentToken, childToken, aura){
+    static canShareAura(parentToken, childToken, aura){
         //verifies that the aura is set to apply to allies, or else if enemies verifies that target is an enemy.
         let parentTokenDisposition = parentToken.disposition;
         let childTokenDisposition = childToken.disposition;
@@ -206,7 +186,7 @@ export class AuraLogic{
         return false;
     }
 
-    static GetInactiveShareFlag(aura){
+    static getInactiveShareFlag(aura){
         let shareAura = false;
         if(aura.hasItemBooleanFlag('shareInactive')){
             shareAura = true;
@@ -214,8 +194,7 @@ export class AuraLogic{
         return shareAura;
     }
 
-
-    static IsUnconscious(actor){
+    static isUnconscious(actor){
         let unconsciousAuras = game.settings.get('aurashare', 'UnconsciousAuras');
         if (unconsciousAuras){
             return false;

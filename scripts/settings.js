@@ -20,11 +20,11 @@ export class Settings {
             });
             game.settings.register('aurashare', 'DeleteAuras', {
                 name: 'Delete Auras',
-                hint: 'Should auras be deleted when an actor is out of range? (Warning: Performance Hit)',
+                hint: 'Should auras be deleted when an actor is out of range? (If not, they get deactivated)',
                 scope: 'world',   
                 config: true,     
                 type: Boolean,     
-                default: false
+                default: true
             });
     }
 }
