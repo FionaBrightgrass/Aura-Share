@@ -3,7 +3,7 @@
     "name": "aurashare",
     "title": "Aura Share",
     "description": "Automates auras in Pathfinder 1e",
-    "version": "1.5.3",
+    "version": "1.5.4",
     "esmodules": [
         "scripts/aurashare.js"
       ],
@@ -14,6 +14,17 @@
         "discord": "Cactuar#3425"
       }
     ],
+    "relationships": {
+      "systems": [
+        {
+          "id": "pf1",
+          "type": "system",
+          "compatibility": {
+            "minimum": "0.82.5"
+          }
+        }
+      ]
+    },
     "minimumCoreVersion": "10.0.0",
     "compatibleCoreVersion": "10",
     "url": "https://github.com/FionaBrightgrass/Aura-Share",
