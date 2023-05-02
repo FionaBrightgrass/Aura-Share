@@ -122,6 +122,7 @@ export class AuraLogic{
                 newAura.system.identifiedName = parentAura.name + " (" + parentToken.name + ")";
                 newAura.system.flags.dictionary.radius = 0;
                 newAura.system.active = true;
+                newAura.system.buffType = "temp";
                 //we grabbed the aura, added the parents (name) to it, set the radius to 0 (necessary), and told the system that it will be active when applied.
                 let radius = parentAura.getItemDictionaryFlag('radius');
                 let inRange = (distance <= radius);
@@ -173,6 +174,9 @@ export class AuraLogic{
         let parentTokenDisposition = parentToken.disposition;
         let childTokenDisposition = childToken.disposition;
         let hostileAura = aura.hasItemBooleanFlag('shareEnemies');
+        if(aura.hasItemBooleanFlag('shareNeutral') && childTokenDisposition == 0){
+            return true;
+        }
         if(hostileAura){
             if(parentTokenDisposition == (childTokenDisposition * -1)){
                 return true;

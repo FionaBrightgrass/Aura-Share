@@ -3,7 +3,7 @@
     "name": "aurashare",
     "title": "Aura Share",
     "description": "Automates auras in Pathfinder 1e",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "esmodules": [
         "scripts/aurashare.js"
       ],
