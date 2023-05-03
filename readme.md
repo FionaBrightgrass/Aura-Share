@@ -1,11 +1,10 @@
 ![image](https://i.imgur.com/Up1jqTJ.png)
 
   <br>
-<strong>This mod is presently compatible with: Pathfinder 1e</strong>  <br>
+<strong>This mod is presently compatible with Pathfinder 1e</strong>  <br>
 
 
-
-Pathfinder Aura Share: Automates the sharing of buffs between tokens. This makes handling auras easier. The conditions for automating the auras are listed in the notes below. (It's pretty simple)  <br>
+Aura Share: Automates the sharing of buffs between tokens. This makes handling auras easier. The conditions for automating the auras are listed in the notes below. (It's pretty simple)  <br>
   <br>
 If you enjoy this mod feel free to tip! <br>
 https://ko-fi.com/cactuarcrunch  <br>
@@ -13,16 +12,16 @@ https://ko-fi.com/cactuarcrunch  <br>
   <br>
 Manifest URL: https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.json  <br>
   <br>
-  <br>
 ## Instructions: <br>
-Create the a buff with the dictionary flag: "radius" with a value greater than 0. <br>
-<em>....the buff  now auto shares</em>  <br>  <br>
-<strong>Optional:</strong>  <br>
-- Boolean Flag: <font color="#AAFFAA">shareInactive    <em>shares the buff even if it is toggled off. Great for buffs that only impact allies.</em>  <br>
-- Boolean Flag: shareEnemies     <em>shares the buff with enemies (instead of allies). Typically combined with shareInactive.</em>  <br>
-- Boolean Flag: shareNeutral     <em>shares the buff with targets with neutral disposition.</em>  <br>
-- Boolean Flag: shareAll         <em>shares the buff with everyone regardless of disposition.</em>  <br>
-- Boolean Flag: shareUnconscious <em>shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)</em>  
+Create a buff (item on a character sheet) with the dictionary flag: "radius" and with a value greater than 0. <br>
+<sub>...the buff now automatically shares depending on the flags below:</sub> <br>  <br>
+<strong>Optional flags that can be added to the buff:</strong>  <br>
+<sub>note: these are case sensitive.</sub>  <br>
+- shareInactive  </br><sub>flag type: Boolean  </br> shares the buff even if it is toggled off. Great for buffs that only impact allies.  <br></sub>  <br>
+- shareEnemies  </br><sub>flag type: Boolean  </br>   shares the buff with enemies (instead of allies). Typically combined with shareInactive.  <br></sub>  <br>
+- shareNeutral  </br> <sub>flag type: Boolean  </br>  shares the buff with targets with neutral disposition.  <br></sub>  <br>
+- shareAll  </br>  <sub>flag type: Boolean  </br>     shares the buff with everyone regardless of disposition.  <br></sub>  <br>
+- shareUnconscious  </br><sub>flag type: Boolean  </br> shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)  <br></sub>    <br>
   <br>
 Example:  <br>
 ![image](https://i.imgur.com/zRj6ITb.png)
