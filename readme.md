@@ -21,6 +21,7 @@ _optional:
 -Boolean Flag: "shareInactive"    __share the buff even if it is toggled off. Great for buffs that only impact allies.
 -Boolean Flag: "shareEnemies"     __share the aura with enemies (instead of allies). Typically combined with shareInactive.
 -Boolean Flag: "shareNeutral"     __share the aura with targets with neutral disposition.
+-Boolean Flag: "shareAll"         __share with everyone regardless of disposition.
 
 ![image](https://i.imgur.com/zRj6ITb.png)
 
