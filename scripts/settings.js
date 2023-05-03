@@ -26,5 +26,13 @@ export class Settings {
                 type: Boolean,     
                 default: true
             });
+            game.settings.register('aurashare', 'ShareZero', {
+                name: 'Share at 0 HP',
+                hint: 'Should auras be shared by an actor with exactly 0 HP? Disabling this will require -1 HP to disable the aura.',
+                scope: 'world',   
+                config: true,     
+                type: Boolean,     
+                default: true
+            });
     }
 }

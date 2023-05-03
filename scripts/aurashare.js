@@ -63,6 +63,7 @@ Hooks.on('preDeleteToken', async(token, _options, _userId) =>{
 
 Hooks.on('deleteToken', async(token, _options, _userId) =>{
     if(Utils.shouldHandle()){
+        sceneTokens.length = 0;
         sceneTokens = Utils.createTokenArray(token);
     }    
 });

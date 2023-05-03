@@ -37,16 +37,6 @@ export class AuraLogic{
         return;
     }
     
-    static validateAura(parentAura, distance, parentToken, parentActor, childToken){
-        //check a bunch of conditionas if an aura can be shared
-        let radius = parentAura.getItemDictionaryFlag('radius');
-        let inRange = (distance <= radius);
-        let shareIfInactive = this.getInactiveShareFlag(parentAura);
-        let correctDisposition = this.verifyDisposition(parentToken, childToken, parentAura) ?? true;
-        return ((parentAura.system.active || shareIfInactive) && inRange && this.validateLifeform(parentActor) && correctDisposition);
-    }
-
-
     static async applyActorAuras(parentToken, parentAuras, childToken){
         //Secondary loop to apply all auras from a parent to a child.
         let distance = canvas.grid.measureDistance(childToken, parentToken); 
@@ -117,7 +107,6 @@ export class AuraLogic{
     static async addAuras(auras, childToken){  
         let aurasToAdd = [];
         let childActor = childToken.getActor();
-        //push all auras to an array:
         Promise.all(auras.map(async (aura) => {
             let foundAura = childActor.items?.getName(aura.name); 
             if(!foundAura){
@@ -161,7 +150,15 @@ export class AuraLogic{
         }));
         return;
     }
-    
+
+    static async clearAllChildAuras(token){
+        let auras = this.getAuras(token, false);
+        //child auras only.
+        if(auras){
+            await this.deleteAuras(auras, token);                                               
+        }
+    }
+
     static generateChildAura(parentActor, parentAura){
         //Converts aura data into child aura data.
         let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
@@ -173,20 +170,20 @@ export class AuraLogic{
         return newAura;
     }
 
-    static async clearAllChildAuras(token){
-        let auras = this.getAuras(token, false);
-        if(auras){
-            await this.deleteAuras(auras, token);                                               
-        }
+    static validateAura(parentAura, distance, parentToken, parentActor, childToken){
+        //check a bunch of conditionas if an aura can be shared
+        let radius = parentAura.getItemDictionaryFlag('radius');
+        let inRange = (distance <= radius);
+        let shareIfInactive = this.getInactiveShareFlag(parentAura);
+        let correctDisposition = this.validateDisposition(parentToken, childToken, parentAura) ?? true;
+        return ((parentAura.system.active || shareIfInactive) && inRange && this.validateLifeform(parentActor, parentAura) && correctDisposition);
     }
 
-
-    static verifyDisposition(parentToken, childToken, aura){
+    static validateDisposition(parentToken, childToken, aura){
         //Checks if the aura can be shared based on flags and disposition.
         let parentTokenDisposition = parentToken.disposition;
         let childTokenDisposition = childToken.disposition;
         let hostileAura = aura.hasItemBooleanFlag('shareEnemies');
-
         //Everyone
         if(aura.hasItemBooleanFlag('shareAll')){
             return true;
@@ -210,31 +207,39 @@ export class AuraLogic{
         return false;
     }
 
-    static getInactiveShareFlag(aura){
-        //Check if an inactive aura should be shared.
-        let shareAura = false;
-        if(aura.hasItemBooleanFlag('shareInactive')){
-            shareAura = true;
-        }
-        return shareAura;
-    }
-
-    static validateLifeform(actor){
+    static validateLifeform(actor, aura){
         //Bzzztttt check the scanner. Detect lifeforms... bzzzt.
         let allowUnconsciousAuras = game.settings.get('aurashare', 'UnconsciousAuras');
+        let shareThreshold = 1;
+        if(game.settings.get('aurashare', 'ShareZero')){
+            shareThreshold = 0;
+            //if they have 0 HP we will share the aura if this flag is on.
+        }
+        if(aura?.hasItemBooleanFlag('shareUnconscious')){
+            return true;
+        }
         if (allowUnconsciousAuras){
             return true;
         }
         let hp = actor.system.attributes.hp.value;
-        if(hp > -1 || this.dieHardCheck(actor)){
+        if(hp >= shareThreshold || this.dieHardCheck(actor)){
             return true;
+        }
+        return false;
+    }
+
+    static getInactiveShareFlag(aura){
+        //Check if an inactive aura should be shared.
+        if(aura.hasItemBooleanFlag('shareInactive')){
+           return true;
         }
         return false;
     }
 
     static dieHardCheck(actor){
         let diehardEnabled = game.settings.get('aurashare', 'Diehard');
-        if(actor.items.getName('Diehard') && diehardEnabled){
+        let hasDiehardKey = actor.items.find(o => o.flags?.core?.sourceId === "Compendium.pf1.feats.O0e0UCim27GPKFuW");
+        if((actor.items.getName('Diehard') || hasDiehardKey) && diehardEnabled){
             return true;
         }
         return false;
