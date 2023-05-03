@@ -57,15 +57,3 @@ Example:  <br>
 <strong>Deletes the buff when:</strong>  <br>
 - the source is deleted.  <br>
   <br>
-
-
----
-
-## Updates  <br>
-(v1.5.0)  Most stuff runs more smoothly now. Auras don't "delete" off of sheets, they just toggle inactive now. (performance reasons.)  <br>
-(v1.3.2)  Actors with an item, buff, etc named "Diehard" will now continue to share their auras when below 0 HP.  <br>
-(v1.3.1)  Delete Token, Create Token are now working. Deleting a token removes inherited buffs. Tokens hitting negative HP now triggers immediately.  <br>
-(v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.  <br>
-(v1.2.0)  Using the shareEnemies Boolean Flag on an aura will switch it to only impact enemies.*   <br>
-          *Combine this with ShareInactive or it will still impact the original token.  <br>
-(v1.0.10) Code cleanup to improve readability and speed up processing of auras.
