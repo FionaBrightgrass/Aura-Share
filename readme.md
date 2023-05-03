@@ -75,6 +75,5 @@ Removes the buff when:  <br>
 
 ---
 
-  <br>
-<strong>Future Updates:</strong>  <br>
+## Future Updates:  <br>
 -To Fix: Renaming an aura will not remove the old buff from a token. Rename auras on the character sheet before the token is placed on the scene.
