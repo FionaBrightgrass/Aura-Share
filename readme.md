@@ -13,15 +13,19 @@ https://ko-fi.com/cactuarcrunch  <br>
 Manifest URL: https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.json  <br>
   <br>
 ## Instructions: <br>
-Create a buff (item on a character sheet) with the dictionary flag: "radius" and with a value greater than 0. <br>
-<sub>...the buff now automatically shares depending on the flags below:</sub> <br>  <br>
+Create a buff (item on a character sheet) with the dictionary flag: "radius" and with a value greater than 0.  <br>
+<sub>...the buff now automatically shares depending on the flags below:</sub>  <br>  <br>
+<strong>Mandatory flags for the buff to share:</strong>  <br>
+- radius  </br><sub>flag type: Dictionary  </br> setting this above zero triggers the buff or "aura" to share.  <br></sub>  <br>
+
 <strong>Optional flags that can be added to the buff:</strong>  <br>
-<sub>note: these are case sensitive.</sub>  <br>
 - shareInactive  </br><sub>flag type: Boolean  </br> shares the buff even if it is toggled off. Great for buffs that only impact allies.  <br></sub>  <br>
 - shareEnemies  </br><sub>flag type: Boolean  </br>   shares the buff with enemies (instead of allies). Typically combined with shareInactive.  <br></sub>  <br>
 - shareNeutral  </br> <sub>flag type: Boolean  </br>  shares the buff with targets with neutral disposition.  <br></sub>  <br>
 - shareAll  </br>  <sub>flag type: Boolean  </br>     shares the buff with everyone regardless of disposition.  <br></sub>  <br>
-- shareUnconscious  </br><sub>flag type: Boolean  </br> shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)  <br></sub>    <br>
+- shareUnconscious  </br><sub>flag type: Boolean  </br> shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)  <br></sub>  <br>
+<sub><strong>note: these are case sensitive.</strong></sub>  <br>
+  
   <br>
 Example:  <br>
 ![image](https://i.imgur.com/zRj6ITb.png)
