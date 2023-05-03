@@ -1,3 +1,6 @@
+![image](https://i.imgur.com/K82oBFy.png)
+
+
 ----------------This is for: Pathfinder 1E-------------------------------
 Pathfinder Aura Share: Automates the sharing of buffs between tokens. This makes handling auras easier. The conditions for automating the auras are listed in the notes below. (It's pretty simple)
 
@@ -19,7 +22,7 @@ _optional:
 -Boolean Flag: "shareEnemies"     __share the aura with enemies (instead of allies). Typically combined with shareInactive.
 -Boolean Flag: "shareNeutral"     __share the aura with targets with neutral disposition.
 
-Example: https://github.com/FionaBrightgrass/Aura-Share/blob/main/AuraExample.png
+![image](https://i.imgur.com/zRj6ITb.png)
 
 
 ----------------------Steps----------------------
