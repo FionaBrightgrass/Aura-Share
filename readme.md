@@ -3,7 +3,7 @@
   <br>
 <strong>This mod is presently compatible with: Pathfinder 1e</strong>  <br>
 
----
+
 
 Pathfinder Aura Share: Automates the sharing of buffs between tokens. This makes handling auras easier. The conditions for automating the auras are listed in the notes below. (It's pretty simple)  <br>
   <br>
@@ -13,9 +13,8 @@ https://ko-fi.com/cactuarcrunch  <br>
   <br>
 Manifest URL: https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.json  <br>
   <br>
-  
----
-## How to use this: <br>
+  <br>
+## Instructions: <br>
 Create the a buff with the dictionary flag: "radius" with a value greater than 0. <br>
 <em>....the buff  now auto shares</em>  <br>  <br>
 <strong>Optional:</strong>  <br>
@@ -23,12 +22,13 @@ Create the a buff with the dictionary flag: "radius" with a value greater than 0
 - Boolean Flag: shareEnemies     <em>shares the buff with enemies (instead of allies). Typically combined with shareInactive.</em>  <br>
 - Boolean Flag: shareNeutral     <em>shares the buff with targets with neutral disposition.</em>  <br>
 - Boolean Flag: shareAll         <em>shares the buff with everyone regardless of disposition.</em>  <br>
-- Boolean Flag: shareUnconscious <em>shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)</em>  <br>  <br>
+- Boolean Flag: shareUnconscious <em>shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)</em>  
+  <br>
 Example:  <br>
 ![image](https://i.imgur.com/zRj6ITb.png)
   <br>
-
----
+  <br>
+  <br>
 ## Conditions for Applying Auras  <br>
 <strong>Adds the buff to allies if:</strong>  <br>
 - The source actor has a buff with a radius > 0.  <br>
