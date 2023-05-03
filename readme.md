@@ -1,7 +1,7 @@
-![image](https://i.imgur.com/K82oBFy.png)
+![image](https://i.imgur.com/Up1jqTJ.png)
 
   <br>
-<strong>This is for: Pathfinder 1E</strong>  <br>
+<strong>This mod is presently compatible with: Pathfinder 1e</strong>  <br>
 
 ---
 
@@ -18,14 +18,15 @@ Manifest URL: https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.jso
   
 <strong>Steps:</strong>  <br>
 Create the following:  <br>
--Item Type: Buff  <br>
--Dictionary Flag: "radius" & value > 0  <br>
+- Item Type: Buff  <br>
+- Dictionary Flag: "radius" & value > 0  <br>
 <em>....the buff  now auto shares</em>  <br>
 Optional:  <br>
--Boolean Flag: "shareInactive"    <em>share the buff even if it is toggled off. Great for buffs that only impact allies.</em>  <br>
--Boolean Flag: "shareEnemies"     <em>share the aura with enemies (instead of allies). Typically combined with shareInactive.</em>  <br>
--Boolean Flag: "shareNeutral"     <em>share the aura with targets with neutral disposition.</em>  <br>
--Boolean Flag: "shareAll"         <em>share with everyone regardless of disposition.</em>  <br>    <br>
+- Boolean Flag: "shareInactive"    <em>share the buff even if it is toggled off. Great for buffs that only impact allies.</em>  <br>
+- Boolean Flag: "shareEnemies"     <em>share the aura with enemies (instead of allies). Typically combined with shareInactive.</em>  <br>
+- Boolean Flag: "shareNeutral"     <em>share the aura with targets with neutral disposition.</em>  <br>
+- Boolean Flag: "shareAll"         <em>share with everyone regardless of disposition.</em>  <br>    <br>
+- Boolean Flag: "shareUnconscious" <em>share the aura even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)
 
 ![image](https://i.imgur.com/zRj6ITb.png)
   <br>
