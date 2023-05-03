@@ -62,7 +62,7 @@ Example:  <br>
 ---
 
 ## Updates  <br>
-(v1.5.0)  Most stuff runs async now. Auras don't "delete" off of sheets, they just toggle inactive now. (performance reasons.)  <br>
+(v1.5.0)  Most stuff runs more smoothly now. Auras don't "delete" off of sheets, they just toggle inactive now. (performance reasons.)  <br>
 (v1.3.2)  Actors with an item, buff, etc named "Diehard" will now continue to share their auras when below 0 HP.  <br>
 (v1.3.1)  Delete Token, Create Token are now working. Deleting a token removes inherited buffs. Tokens hitting negative HP now triggers immediately.  <br>
 (v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.  <br>
