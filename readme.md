@@ -1,6 +1,7 @@
 ![image](https://i.imgur.com/K82oBFy.png)
 
 
+
 ----------------This is for: Pathfinder 1E-------------------------------
 Pathfinder Aura Share: Automates the sharing of buffs between tokens. This makes handling auras easier. The conditions for automating the auras are listed in the notes below. (It's pretty simple)
 
