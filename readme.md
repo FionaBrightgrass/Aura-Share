@@ -18,7 +18,7 @@ Manifest URL: https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.jso
 ## How to use this: <br>
 Create the a buff with the dictionary flag: "radius" with a value greater than 0. <br>
 <em>....the buff  now auto shares</em>  <br>  <br>
-Optional:  <br>
+<strong>Optional:</strong>  <br>
 - Boolean Flag: <font color="#AAFFAA">shareInactive    <em>shares the buff even if it is toggled off. Great for buffs that only impact allies.</em>  <br>
 - Boolean Flag: shareEnemies     <em>shares the buff with enemies (instead of allies). Typically combined with shareInactive.</em>  <br>
 - Boolean Flag: shareNeutral     <em>shares the buff with targets with neutral disposition.</em>  <br>
@@ -30,34 +30,32 @@ Example:  <br>
 
 ---
 ## Conditions for Applying Auras  <br>
-Adds the buff to allies if:  <br>
--The source actor has a buff with a radius > 0.  <br>
--The buff is enabled, OR if the source actor's buff has the "shareInactive" Boolean flag.  <br>
+<strong>Adds the buff to allies if:</strong>  <br>
+- The source actor has a buff with a radius > 0.  <br>
+- The buff is enabled, OR if the source actor's buff has the "shareInactive" Boolean flag.  <br>
   <br>
-Adds the buff to allies when:  <br>
--They enter range (either actor can move).  <br>
--The buff is toggled on.  <br>
--A Token is created in the scene, and allies are in range.  <br>
--The aura actor's HP rises above 0.  <br>
+  
+<strong>Adds the buff to allies when:</strong>  <br>
+- They enter range (either actor can move).  <br>
+- The buff is toggled on.  <br>
+- A Token is created in the scene, and allies are in range.  <br>
+- The aura actor's HP rises above 0.  <br>
   <br>
-Adds the buff to enemies if:  <br>
--The buff also has a "shareEnemies" Boolean Flag. Note: You typically would combine this with "shareInactive" so that the buff doesn't hurt the source actor.  <br>
+  
+<strong>Adds the buff to enemies if:</strong>  <br>
+- The buff also has a "shareEnemies" Boolean Flag. Note: You typically would combine this with "shareInactive" so that the buff doesn't hurt the source actor.  <br>
    <br>
-Adds the Buff when:  <br>
--A new buff has a radius set to > 0 and the token moves or the buff is toggled. Best to create it on the actor then add to scene.  <br>
--The buff is toggled on.  <br>
--A token with an aura buff is added to the scene. (radius > 0)  <br>
--The actor's HP increases over 0, and the actor was previously dead.  <br>
--An actor moves into range of the buff.  <br>
+
+<strong>Deactives or Deletes the buff when:</strong>  <br>
+<sub>NOTE: These can be toggled between activate auras and delete auras in the module settings</sub>  <br>
+- The source moves out of range.  <br>
+- The recipient moves out of range.  <br>
+- The source disables the buff, and the buff does not have the "alliesOnly" Boolean Flag  <br>
+- The source's HP falls below zero, unless: It has the Diehard feat -OR- Unconscious Auras is toggled OFF in the menus.  <br>
   <br>
-Deactives the buff when:  <br>
--The source moves out of range.  <br>
--The recipient moves out of range.  <br>
--The source disables the buff, and the buff does not have the "alliesOnly" Boolean Flag  <br>
--The source's HP falls below zero, unless: It has the Diehard feat -OR- Unconscious Auras is toggled OFF in the menus.  <br>
-  <br>
-Removes the buff when:  <br>
--the source is deleted.  <br>
+  
+<strong>Deletes the buff when:</strong>  <br>
+- the source is deleted.  <br>
   <br>
 
 
@@ -70,10 +68,4 @@ Removes the buff when:  <br>
 (v1.2.7)  Delete Token hooks have once again been disabled. They were causing a bug with stacking buff icons.  <br>
 (v1.2.0)  Using the shareEnemies Boolean Flag on an aura will switch it to only impact enemies.*   <br>
           *Combine this with ShareInactive or it will still impact the original token.  <br>
-(v1.0.10) Code cleanup to improve readability and speed up processing of auras.  <br>
-  <br>
-
----
-
-## Future Updates:  <br>
--To Fix: Renaming an aura will not remove the old buff from a token. Rename auras on the character sheet before the token is placed on the scene.
+(v1.0.10) Code cleanup to improve readability and speed up processing of auras.
