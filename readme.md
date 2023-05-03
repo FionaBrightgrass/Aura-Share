@@ -15,45 +15,21 @@ Manifest URL: https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.jso
   <br>
   
 ---
-  
-<strong>Steps:</strong>  <br>
-Create the following:  <br>
-- Item Type: Buff  <br>
-- Dictionary Flag: "radius" & value > 0  <br>
-<em>....the buff  now auto shares</em>  <br>
+## How to use this: <br>
+Create the a buff with the dictionary flag: "radius" with a value greater than 0. <br>
+<em>....the buff  now auto shares</em>  <br>  <br>
 Optional:  <br>
-- Boolean Flag: "shareInactive"    <em>share the buff even if it is toggled off. Great for buffs that only impact allies.</em>  <br>
-- Boolean Flag: "shareEnemies"     <em>share the aura with enemies (instead of allies). Typically combined with shareInactive.</em>  <br>
-- Boolean Flag: "shareNeutral"     <em>share the aura with targets with neutral disposition.</em>  <br>
-- Boolean Flag: "shareAll"         <em>share with everyone regardless of disposition.</em>  <br>    <br>
-- Boolean Flag: "shareUnconscious" <em>share the aura even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)
-
+- Boolean Flag: <font color="#AAFFAA">shareInactive    <em>shares the buff even if it is toggled off. Great for buffs that only impact allies.</em>  <br>
+- Boolean Flag: shareEnemies     <em>shares the buff with enemies (instead of allies). Typically combined with shareInactive.</em>  <br>
+- Boolean Flag: shareNeutral     <em>shares the buff with targets with neutral disposition.</em>  <br>
+- Boolean Flag: shareAll         <em>shares the buff with everyone regardless of disposition.</em>  <br>
+- Boolean Flag: shareUnconscious <em>shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)</em>  <br>  <br>
+Example:  <br>
 ![image](https://i.imgur.com/zRj6ITb.png)
   <br>
 
 ---
-
-  <br>
-<strong>Details</strong>  <br>
-Add a buff to a PF1E actor. Name it whatever you'd like.  <br>
-  <br>
-Give the buff/aura a Dictionary Flag of "radius" with a value greater than 0.  <br>
-  <br>
-It will auto copy to other tokens except with:  <br>
-The new buff name becomes: Aura Name (Source Actor's Name)  <br>
-"radius" is set to 0 on the recipient   <br>
-  <br>
-optional: Give the aura a Boolean Flag of shareInactive to allow sharing of disabled auras.   <br>
-optional: Give the aura a Boolean Flag of shareEnemies to target enemies instead of allies. Combine this with shareInactive for enemies only.   <br>
-optional: Give the aura a Boolean Flag of shareNeutral to share with neutral tokens.   <br>
-optional: Give the aura a Boolean Flag of shareAll to share with everyone.   <br>
-optional: Give an actor the Diehard feat to share when HP is below 0. (Toggle in options)   <br>
-  <br>
-
----
-
-  <br>
-<strong>Conditions for Applying Auras</strong>  <br>
+## Conditions for Applying Auras  <br>
 Adds the buff to allies if:  <br>
 -The source actor has a buff with a radius > 0.  <br>
 -The buff is enabled, OR if the source actor's buff has the "shareInactive" Boolean flag.  <br>
@@ -87,8 +63,7 @@ Removes the buff when:  <br>
 
 ---
 
-  <br>
-<strong>Updates</strong>  <br>
+## Updates  <br>
 (v1.5.0)  Most stuff runs async now. Auras don't "delete" off of sheets, they just toggle inactive now. (performance reasons.)  <br>
 (v1.3.2)  Actors with an item, buff, etc named "Diehard" will now continue to share their auras when below 0 HP.  <br>
 (v1.3.1)  Delete Token, Create Token are now working. Deleting a token removes inherited buffs. Tokens hitting negative HP now triggers immediately.  <br>
