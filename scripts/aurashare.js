@@ -4,6 +4,7 @@ import { Utils } from './utils.js';
 
 
 let sceneTokens = [];
+//to prevent over looping tokens are handled here. 
 
 Hooks.once('i18nInit', () => { 
     Settings.registerSettings();
