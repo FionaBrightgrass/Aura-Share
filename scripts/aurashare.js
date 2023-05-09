@@ -39,7 +39,7 @@ Hooks.on('updateToken', async (token, update, _options, _userId) => {
 });
 
 Hooks.on('updateActor', async(actor, update, _options, _userId) => {
-    if(Utils.shouldHandle() && update.system.attributes.hp){
+    if(Utils.shouldHandle() && update.system?.attributes?.hp !== undefined){
         if(sceneTokens?.length < 1){
             sceneTokens.length = 0;
             sceneTokens = Utils.createTokenArray();
