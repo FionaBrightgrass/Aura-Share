@@ -24,6 +24,8 @@ Create a buff (item on a character sheet) with the dictionary flag: "radius" and
 - shareNeutral  </br> <sub>flag type: Boolean  </br>  shares the buff with targets with neutral disposition.  <br></sub>  <br>
 - shareAll  </br>  <sub>flag type: Boolean  </br>     shares the buff with everyone regardless of disposition.  <br></sub>  <br>
 - shareUnconscious  </br><sub>flag type: Boolean  </br> shares the buff even if you're unconscious. (This works like the Diehard feat, but allows DMs more control over individual auras.)  <br></sub>  <br>
+- teamwork  </br><sub>flag type: Boolean  </br> Only share the aura if there's a dictionary flag "feat" and the value matches the feat name. <br></sub>  <br>
+- feat  </br><sub>flag type: Dictionary  </br> Pairing this with teamwork, only share this aura if the other actor has a feat who's name matches the value exactly.  <br></sub>  <br>
 <sub><strong>note: these are case sensitive.</strong></sub>  <br>
   
   <br>
