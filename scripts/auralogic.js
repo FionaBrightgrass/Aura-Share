@@ -172,7 +172,18 @@ export class AuraLogic{
 
     static validateAura(parentAura, distance, parentToken, parentActor, childToken){
         //check a bunch of conditionas if an aura can be shared
-        let radius = parentAura.getItemDictionaryFlag('radius');
+        if(parentAura.hasItemBooleanFlag('teamwork')){
+            let featName = parentAura.getItemDictionaryFlag('feat');
+            console.log(featName);
+            let feat = childToken.actor.items.getName(featName);
+            console.log(feat);
+            if(feat === undefined){
+                return false;
+                //if it's a teamwork feat but the child lacks the feat then return false.
+            }
+        }
+        let radius = parseInt(parentAura.getItemDictionaryFlag('radius')) ?? 0;
+        radius += parseInt(game.settings.get('aurashare', 'Nudge'));
         let inRange = (distance <= radius);
         let shareIfInactive = this.getInactiveShareFlag(parentAura);
         let correctDisposition = this.validateDisposition(parentToken, childToken, parentAura) ?? true;
