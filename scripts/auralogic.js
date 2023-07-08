@@ -15,28 +15,28 @@ export class AuraLogic{
 
     static async refreshAuras(parentToken, childTokens, deleteOnly){
         //Main loop to reresh auras on all tokens relative to the parent token.
-        console.log(Date.now() + " Starting refreshAuras")
+        //console.log(Date.now() + " Starting refreshAuras")
         let giveAuras = this.getAuras(parentToken, true);
-        console.log(Date.now() + " getAuras complete.")
+        //console.log(Date.now() + " getAuras complete.")
         Promise.all(childTokens.map(async (childToken) => {
             if(childToken?.id != parentToken?.id){
-                console.log(Date.now() + " In first promise")
+                //console.log(Date.now() + " In first promise")
                 let receiveAuras = this.getAuras(childToken, true);
-                console.log(Date.now() + " Ran getAuras on child token.")
+                //console.log(Date.now() + " Ran getAuras on child token.")
                 if(giveAuras?.length > 0){
                     if(deleteOnly){
                         //this flag is meant for when a token is deleted or dies.
                         this.clearSingleAuraSet(parentToken, giveAuras, childToken);
-                        console.log(Date.now() + " Cleared Aura Set")
+                        //console.log(Date.now() + " Cleared Aura Set")
                     }else{
                         this.applyActorAuras(parentToken, giveAuras, childToken);
-                        console.log(Date.now() + " Applied parent actor's auras to child.")
+                        //console.log(Date.now() + " Applied parent actor's auras to child.")
                         //PARENT  ->   CHILD
                     }
                 }
                 if(receiveAuras?.length > 0){
                      this.applyActorAuras(childToken, receiveAuras, parentToken);
-                     console.log(Date.now() + " Applied child actor's auras to parent.")
+                     //console.log(Date.now() + " Applied child actor's auras to parent.")
                     //CHILD   ->   PARENT
                 }
             }
@@ -79,15 +79,15 @@ export class AuraLogic{
     static getAuras(token, getParentAuras){
         //will filter for parent/child auras automatically using the booleon getParentAuras flag:
         let auras = [];
-        console.log(Date.now() + " In Get Auras.")
+        //console.log(Date.now() + " In Get Auras.")
         let auraActor = token.actor;
         //^^^ Do not use token.getActor() as it adds 40ms per loop!!!!!!!!!!!!!
-        console.log(Date.now() + " Ran token.getActor.")
+        //console.log(Date.now() + " Ran token.getActor.")
         var x = {};
-        console.log(auraActor.itemTypes.buff.length);
+        //console.log(auraActor.itemTypes.buff.length);
         //Check to see if the actor has a buff with a flag and then calculate auras. 
         if(auraActor.itemTypes.buff.length > 0){ 
-            console.log(Date.now() + " In aura loop for getAuras.")
+            //console.log(Date.now() + " In aura loop for getAuras.")
             if(getParentAuras == true){
                 auras = (auraActor.items?.filter(o => o.system?.flags?.dictionary?.radius > 0));
                 //Auras with a radius greater than 0 share.
@@ -196,8 +196,8 @@ export class AuraLogic{
                 //if it's a teamwork feat but the child lacks the feat then return false.
             }
         }
-        console.log(parentToken);
-        console.log(parentAura);
+        //console.log(parentToken);
+        //console.log(parentAura);
         let radius = this.calculateRadius(parentToken, parentAura);
         let inRange = (distance <= radius);
         let shareIfInactive = this.getInactiveShareFlag(parentAura);
