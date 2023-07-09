@@ -21,6 +21,13 @@
           "type": "system",
           "compatibility": {
             "minimum": "0.82.5"
+          },
+
+        {
+          "id": "ffd20",
+          "type": "system",
+          "compatibility": {
+            "minimum": "10.0.0"
           }
         }
       ]
