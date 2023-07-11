@@ -82,7 +82,6 @@ export class AuraLogic{
         //console.log(Date.now() + " In Get Auras.")
         let auraActor = token.actor;
         //^^^ Do not use token.getActor() as it adds 40ms per loop!!!!!!!!!!!!!
-        //console.log(Date.now() + " Ran token.getActor.")
         var x = {};
         //console.log(auraActor.itemTypes.buff.length);
         //Check to see if the actor has a buff with a flag and then calculate auras. 
