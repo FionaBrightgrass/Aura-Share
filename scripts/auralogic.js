@@ -46,7 +46,7 @@ export class AuraLogic{
     
     static async applyActorAuras(parentToken, parentAuras, childToken){
         //Secondary loop to apply all auras from a parent to a child.
-        let distance = canvas.grid.measureDistance(childToken, parentToken); 
+        let distance = !!pf1.utils.measureDistance ? pf1.utils.measureDistance({ x: childToken.x, y: childToken.y }, { x: parentToken.x, y: parentToken.y }) : canvas.grid.measureDistance(childToken, parentToken); 
         let aurasToAdd = [];
         let aurasToRemove = [];
         let parentActor = parentToken.actor;
