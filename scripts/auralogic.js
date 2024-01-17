@@ -177,6 +177,10 @@ export class AuraLogic{
     static generateChildAura(parentActor, parentAura){
         //Converts aura data into child aura data.
         let newAura = parentActor.getEmbeddedDocument('Item', parentAura._id).toObject();
+        
+        // replaces @ references to parent rollData with their current values
+        newAura.system.changes.forEach(c => {c.formula = Roll.replaceFormulaData(c.formula, parentActor._rollData)})
+
         newAura.name = parentAura.name + " (" + parentActor.name + ")";
         newAura.system.identifiedName = parentAura.name + " (" + parentActor.name + ")";
         newAura.system.flags.dictionary.radius = 0;
