@@ -60,7 +60,7 @@ export class AuraLogic{
     
 
     static async updateAuraData(activeToken, parentAuras, inactiveToken){
-        let distance = pf1.utils.measureDistance(activeToken, inactiveToken); 
+        let distance = !!pf1.utils.measureDistance ? pf1.utils.measureDistance({ x: inactiveToken.x, y: inactiveToken.y }, { x: activeToken.x, y: activeToken.y }) : canvas.grid.measureDistance(inactiveToken, activeToken); 
         let aurasToSync = [];
         let aurasToRemove = [];
         let activeActor = activeToken.actor;
@@ -160,6 +160,8 @@ export class AuraLogic{
     static generateChildAura(activeActor, parentAura){
         //Converts aura data into child aura data.
         let newAura = activeActor.getEmbeddedDocument('Item', parentAura._id).toObject();
+        // replaces @ references to parent rollData with their current values
+        newAura.system.changes.forEach(c => {c.formula = Roll.replaceFormulaData(c.formula, activeActor._rollData)})
         newAura.name = parentAura.name + " (" + activeActor.name + ")";
         newAura.system.identifiedName = parentAura.name + " (" + activeActor.name + ")";
         newAura.system.flags.dictionary.radius = 0;
@@ -170,7 +172,6 @@ export class AuraLogic{
 
     static validateAura(parentAura, activeToken, activeActor, inactiveToken){
         //check a bunch of conditionas if an aura can be shared
-        //let radius = this.calculateRadius(activeToken, parentAura);
         let shareIfInactive = this.getInactiveShareFlag(parentAura);
         let correctDisposition = this.validateDisposition(activeToken, inactiveToken, parentAura) ?? true;
         return ((parentAura.system.active || shareIfInactive) && this.validateLifeform(activeActor, parentAura) && correctDisposition);
@@ -223,16 +224,6 @@ export class AuraLogic{
             return true;
         }
         return false;
-    }
-
-    static calculateRadius(token, aura){
-        let size = Math.max(token.width, token.height);
-        let radius = parseInt(aura.getItemDictionaryFlag('radius')) ?? 0;
-        radius = Math.max(radius, 1);
-        //We don't need a negative radius.
-        radius += (size - 1) * 5;
-        radius += parseInt(game.settings.get('aurashare', 'Nudge'));
-        return radius;
     }
 
     static getInactiveShareFlag(aura){

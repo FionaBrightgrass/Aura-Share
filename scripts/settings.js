@@ -34,13 +34,5 @@ export class Settings {
                 type: Boolean,     
                 default: true
             });
-            game.settings.register('aurashare', 'Nudge', {
-                name: 'Nudge Auras',
-                hint: 'Increase or decrease the radius of all auras by x feet. A value of 1-4 feet may help grab corner squares when the actual Foundry radius does not match your template. ',
-                scope: 'world',   
-                config: true,     
-                type: Number,     
-                default: 0
-            });
     }
 }
