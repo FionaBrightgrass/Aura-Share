@@ -3,15 +3,15 @@
     "name": "aurashare",
     "title": "Aura Share",
     "description": "Automates auras in Pathfinder 1e",
-    "version": "2.0.7",
+    "version": "2.0.8",
     "esmodules": [
         "scripts/aurashare.js"
       ],
     "authors": [
       {
-        "name": "Cactuar / Fiona",
+        "name": "Fiona Brightgrass",
         "url": "https://github.com/FionaBrightgrass/Aura-Share",
-        "discord": "FionaBrightgrass"
+        "discord": "lvl99fiona"
       }
     ],
     "relationships": {
