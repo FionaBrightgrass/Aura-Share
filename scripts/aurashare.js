@@ -58,7 +58,7 @@ Hooks.on('updateActor', async(actor, update, _options, _userId) => {
 Hooks.on('preDeleteToken', async(token, _options, _userId) =>{
     if(Utils.shouldHandle()){
         //console.log('predelete');
-        AuraLogic.forceRemoveAuras(token, sceneTokens);
+        AuraLogic.clearInheritedAuras(token, sceneTokens);
         //AuraLogic.clearAllChildAuras(token);
     }    
 });

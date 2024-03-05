@@ -15,10 +15,10 @@ export class AuraLogic{
 
     //This is main the entry point from the hooks:
     static async tradeAuras(ActiveToken, PassiveTokens){
-        let Auras_ActiveToken = this.getAuras(ActiveToken, true);
+        let Auras_ActiveToken = this.getAuras(ActiveToken, false);
         Promise.all(PassiveTokens.map(async (PassiveToken) => {
             if(PassiveToken?.id != ActiveToken?.id){
-                let Auras_PassiveToken = this.getAuras(PassiveToken, true);
+                let Auras_PassiveToken = this.getAuras(PassiveToken, false);
                 if(Auras_ActiveToken?.length > 0){
                     //Active Token -> Inactive
                     this.updateAuraData(ActiveToken, Auras_ActiveToken, PassiveToken);
@@ -34,8 +34,9 @@ export class AuraLogic{
 
     //This is the secondary entry point from the hooks:
     //forceRemoveAuras only fires just before token deletion:
+
     static async forceRemoveAuras(ActiveToken, PassiveTokens){
-        let Auras_ActiveToken = this.getAuras(ActiveToken, true);
+        let Auras_ActiveToken = this.getAuras(ActiveToken, false);
         if(Auras_ActiveToken?.length > 0 ) {
             Promise.all(PassiveTokens.map(async (PassiveToken) => {
                 if(PassiveToken?.id != ActiveToken?.id){
@@ -57,7 +58,18 @@ export class AuraLogic{
         }
         return;
     }
-    
+
+    static async clearInheritedAuras(token){
+        let aurasToRemove = this.getAuras(token, true);
+        if(aurasToRemove?.length > 0 ) {
+            if(game.settings.get('aurashare', 'DeleteAuras')){
+                this.deleteAuras(aurasToRemove, token);
+            }else{
+                this.deactivateAuras(aurasToRemove, token);
+            }
+        }
+        return;
+    }
 
     static async updateAuraData(activeToken, parentAuras, inactiveToken){
         let distance = pf1.utils.measureDistance({ x: inactiveToken.x, y: inactiveToken.y }, { x: activeToken.x, y: activeToken.y }) ?? canvas.grid.measureDistance(inactiveToken, activeToken); 
@@ -108,14 +120,18 @@ export class AuraLogic{
         return;
     }
 
-    static getAuras(token, getUninheritedAuras){
+    static getAuras(token, getInheritedAuras){
         //will filter for parent/child auras automatically using the booleon getParentAuras flag:
         let auras = [];
         let auraActor = token.actor;
         //Check to see if the actor has a buff with a flag and then calculate auras. 
         if(auraActor.itemTypes.buff.length > 0){ 
+            if(getInheritedAuras){
+                auras = (auraActor.items?.filter(o => o.system?.flags?.dictionary?.radius == -1));
+            }else{
                 auras = (auraActor.items?.filter(o => o.system?.flags?.dictionary?.radius >= 0));
-                //Auras with a radius greater than 0 share.
+                //Auras with a radius greater or equal to 0 share.
+            }
         }
         return auras;
     }
