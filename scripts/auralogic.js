@@ -1,6 +1,6 @@
 //Synopsis: Copies aura buffs between actors in the Pathfinder 1.E system in FoundryVTT
 //
-//Create by:   Jeremy/Cactuar       
+//Create by:   Fiona Brightgrass      
 //Date:         4/19/23
 //
 //Details:
@@ -32,33 +32,8 @@ export class AuraLogic{
         return;
     }
 
-    //This is the secondary entry point from the hooks:
+    //This is the secondary entry point from the hooks that removes all auras with a radius of -1:
     //forceRemoveAuras only fires just before token deletion:
-
-    static async forceRemoveAuras(ActiveToken, PassiveTokens){
-        let Auras_ActiveToken = this.getAuras(ActiveToken, false);
-        if(Auras_ActiveToken?.length > 0 ) {
-            Promise.all(PassiveTokens.map(async (PassiveToken) => {
-                if(PassiveToken?.id != ActiveToken?.id){
-                    let aurasToRemove = [];
-                    Promise.all(Auras_ActiveToken.map(async (aura) => {
-                        let activeActor = ActiveToken.actor;
-                        let newAura = this.generateChildAura(activeActor, aura);
-                        aurasToRemove.push(newAura);
-                    }));
-                    if(aurasToRemove.length > 0){
-                        if(game.settings.get('aurashare', 'DeleteAuras')){
-                            this.deleteAuras(aurasToRemove, PassiveToken);
-                        }else{
-                            this.deactivateAuras(aurasToRemove, PassiveToken);
-                        }
-                    }
-                }
-            }))
-        }
-        return;
-    }
-
     static async clearInheritedAuras(token){
         let aurasToRemove = this.getAuras(token, true);
         if(aurasToRemove?.length > 0 ) {
@@ -72,7 +47,7 @@ export class AuraLogic{
     }
 
     static async updateAuraData(activeToken, parentAuras, inactiveToken){
-        let distance = pf1.utils.measureDistance({ x: inactiveToken.x, y: inactiveToken.y }, { x: activeToken.x, y: activeToken.y }) ?? canvas.grid.measureDistance(inactiveToken, activeToken); 
+        let distance = this.measureTokenDistance(activeToken, inactiveToken);
         let aurasToSync = [];
         let aurasToRemove = [];
         let activeActor = activeToken.actor;
@@ -165,14 +140,6 @@ export class AuraLogic{
         return;
     }
 
-    static clearAllChildAuras(token){
-        let auras = this.getAuras(token, false);
-        //child auras only.
-        if(auras){
-            this.deleteAuras(auras, token);                                               
-        }
-    }
-
     static generateChildAura(activeActor, parentAura){
         //Converts aura data into child aura data.
         let newAura = activeActor.getEmbeddedDocument('Item', parentAura._id).toObject();
@@ -219,6 +186,13 @@ export class AuraLogic{
             }
         }
         return false;
+    }
+
+    static measureTokenDistance(a, b){
+        let aCenter = [(a.x + (2.5 * a.width)), (a.y + (2.5 * a.height))];
+        let bCenter = [(b.x + (2.5 * b.width)), (b.y + (2.5 * b.height))];
+        let distanceCenter = pf1.utils.measureDistance({x: aCenter[0], y: aCenter[1]}, {x: bCenter[0], y: bCenter[1]}) ?? canvas.grid.measureDistance(a, b);
+        return distanceCenter;
     }
 
     static validateLifeform(actor, aura){
