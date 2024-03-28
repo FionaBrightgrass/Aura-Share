@@ -13,7 +13,7 @@ https://ko-fi.com/cactuarcrunch  <br>
 Manifest URL: https://github.com/FionaBrightgrass/Aura-Share/raw/main/module.json  <br>
   <br>
 ## Instructions: <br>
-Create a buff (item on a character sheet) with the dictionary flag: "radius" and with a value greater than 0.  <br>
+Create a buff (item on a character sheet) with the dictionary flag: "radius" of atleast 0.  <br>
 <sub>...the buff now automatically shares depending on the flags below:</sub>  <br>  <br>
 <strong>Mandatory flags for the buff to share:</strong>  <br>
 - radius  </br><sub>flag type: Dictionary  </br> setting this above -1 triggers the buff or "aura" to share.  <br></sub>  <br>
