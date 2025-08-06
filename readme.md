@@ -1,3 +1,5 @@
+<strong>Development for this Module has been discontinued. Pull requests will be approved if you would like to pick it up.</strong>  <br>
+
 ![image](https://i.imgur.com/Up1jqTJ.png)
 
   <br>
